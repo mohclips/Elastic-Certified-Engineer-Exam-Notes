@@ -358,6 +358,7 @@ To secure a cluster you need to do a few things:
 - Create CA and node certificates
 - Enable SSL on the Transport Network
 - Enable SSL on the HTTP Network
+- Change the built-in user default passwords
 
 ## Create a node certificate
 
@@ -485,6 +486,7 @@ This file can be your keystore and truststore.
 
 The Transport Network is the network between nodes within a cluster (or between clusters).  On a single-node cluster you do not need this.
 On a production cluster you WILL need this.
+
 <details>
   <summary>View Solution (click to reveal)</summary>
   
@@ -521,14 +523,43 @@ Restart Elasticsearch afterwards.
 </details>
 <hr>
 
+## Change the built-in user default passwords
+
+Serveral accounts needs their passwords changed
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+Use `elasticsearch-setup-passwords`
+
+`auto` - Uses randomly generated passwords
+
+`interactive` - Uses passwords entered by a user
+
+
+```bash
+[elastic@centos8streams elasticsearch]$ pwd
+/home/elastic/elasticsearch
+[elastic@centos8streams elasticsearch]$ ./bin/elasticsearch-setup-passwords interactive
+Initiating the setup of passwords for reserved users elastic,apm_system,kibana,logstash_system,beats_system,remote_monitoring_user.
+You will be prompted to enter passwords as the process progresses.
+Please confirm that you would like to continue [y/N]
+
+```
+
+</details>
+
+<hr>
+
 # Define role-based access control using Elasticsearch Security
+
+> :warning: IMPORTANT NOTE: from here on it is assumed you have a working kibana node to work from the "development console" 
+
+> See: [Running test servers on docker](Test_servers_on_docker.md)
 
 To do this you need to:
 
-- set the built-in user passwords
 - create a role
 - create a user
 
-## Set the built-in user passwords
-
-Serveral accounts needs their passwords changed
+## Create a role
