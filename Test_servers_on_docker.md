@@ -44,15 +44,15 @@ $ git clone https://github.com/glenacota/elastic-training-repo.git
 
 # Boot up a server 
 
+#FIXME: does not work, needs custom files
+
+
+:warning: We use the `allocation-awareness.yml` as it has xpack security enabled
 
 ```bash
 [elastic@centos8streams ~]$ cd elastic-training-repo/clusters-to-go/7.2.0/
 
-[elastic@centos8streams 7.2.0]$ docker-compose -f 1es-1kibana.yml up
-Creating network "720_elastic-net" with the default driver
-Creating volume "720_esnode-data" with local driver
-Pulling esnode (docker.elastic.co/elasticsearch/elasticsearch:7.2.0)...
-7.2.0: Pulling from elasticsearch/elasticsearch
+[elastic@centos8streams 7.2.0]$ docker-compose -f allocation-awareness.yml up
 ...
 
 ```
