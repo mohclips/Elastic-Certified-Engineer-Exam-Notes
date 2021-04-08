@@ -559,6 +559,33 @@ Please confirm that you would like to continue [y/N]
 
 <hr>
 
+### Enable SSL on the HTTP Network
+
+This is the HTTPS used to access port 9200. eg. when using curl or python.
+It is advised that default user passwords should be changed before doing this. (see previous section)
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/security-basic-setup-https.html
+
+v7.2 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/configuring-tls.html#tls-http
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+You should have created the CA certs and keystores before (see previous sections)
+
+Edit the elasticsearch.yml file and set
+```yaml
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.keystore.path: ${node.name}.p12
+xpack.security.http.ssl.truststore.path: ${node.name}.p12
+```
+
+Restart Elasticsearch afterwards.
+
+</details>
+
+<hr>
+
 # Define role-based access control using Elasticsearch Security
 
 >  :warning: :warning: :warning: IMPORTANT NOTE: from here on it is assumed you have a working kibana node to work from the "development console" 
