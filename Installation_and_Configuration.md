@@ -451,7 +451,7 @@ If you specify any of the following options:
     * -in (generate certificates from an input file)
 then the output will be be a zip file containing individual certificate/key files
 
-Enter password for CA (elastic-stack-ca.p12) :
+:point_right:Enter password for CA (elastic-stack-ca.p12) :
 Please enter the desired output file [node01.p12]:
 Enter password for node01.p12 :
 
