@@ -170,7 +170,7 @@ elasticsearch.keystore  elasticsearch.yml  jvm.options  log4j2.properties  role_
 
 ## Configuration settings
 
-Written in YAML.  Below are in dotted notation, but can be written in YAML dictionaries.
+Written in YAML.  Below are in dotted notation, but can be written as YAML dictionaries.
 
 The following `elasticsearch.yml` are worth noting - but there are many mode.
 
@@ -188,8 +188,7 @@ The following `elasticsearch.yml` are worth noting - but there are many mode.
 -
 - xpack.security.enabled: true/false
 - xpack.security.transport.ssl.enabled: true/false
-- xpack.security.transport.ssl.verification_mode: Set to full for node-level verification, or certificate
-for just certificate-level verification
+- xpack.security.transport.ssl.verification_mode: full/certificate - node-level verification (DNS), or certificate for just certificate-level verification (each end has certs)
 - xpack.security.transport.ssl.keystore.path: Path to keystore file for transport network encryption
 - xpack.security.transport.ssl.truststore.path: Path to truststore file for transport network encryption
 - xpack.security.http.ssl.keystore.path: Path to keystore file for http network encryption
@@ -268,9 +267,12 @@ This would be done on each affected node and then restart elasticsearch on that 
 
 Using the API pull the node settings back.
 
+Here i have used the awesome command `jq` to pretty print the results.  You may want to install this on your nodes. (probably not available in the exam setting)
+
 ```bash
 [elastic@centos8streams config]$ curl -s -X GET http://localhost:9200/_nodes/settings | jq .
 ```
+
 ```json
 {
   "_nodes": {
@@ -349,8 +351,143 @@ Using the API pull the node settings back.
 <hr>
 
 
-
-
-
 # Secure a cluster using Elasticsearch Security
+
+To secure a cluster you need to do a few things:
+
+- Create CA and node certificates
+- Enable SSL on the Transport Network
+- Enable SSL on the HTTP Network
+
+## Create a node certificate
+
+Create the CA file and node certificate.
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+### Create the CA file
+```bash
+[elastic@centos8streams elasticsearch]$ pwd
+/home/elastic/elasticsearch
+[elastic@centos8streams elasticsearch]$ ./bin/elasticsearch-certutil ca
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.bouncycastle.jcajce.provider.drbg.DRBG (file:/home/elastic/elasticsearch/lib/tools/security-cli/bcprov-jdk15on-1.61.jar) to constructor sun.security.provider.Sun()
+WARNING: Please consider reporting this to the maintainers of org.bouncycastle.jcajce.provider.drbg.DRBG
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+This tool assists you in the generation of X.509 certificates and certificate
+signing requests for use with SSL/TLS in the Elastic stack.
+
+The 'ca' mode generates a new 'certificate authority'
+This will create a new X.509 certificate and private key that can be used
+to sign certificate when running in 'cert' mode.
+
+Use the 'ca-dn' option if you wish to configure the 'distinguished name'
+of the certificate authority
+
+By default the 'ca' mode produces a single PKCS#12 output file which holds:
+    * The CA certificate
+    * The CA's private key
+
+If you elect to generate PEM format certificates (the -pem option), then the output will
+be a zip file containing individual files for the CA certificate and private key
+
+Please enter the desired output file [elastic-stack-ca.p12]:
+Enter password for elastic-stack-ca.p12 :
+```
+
+Ignore the reflective WARNINGS.
+Accept the defaults.
+
+### Create the actual node certificate
+
+```bash
+[elastic@centos8streams elasticsearch]$ ./bin/elasticsearch-certutil cert --ca ./elastic-stack-ca.p12 --name node01 --dns centos8streams.preview.local --ip 172.30.5.202
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.bouncycastle.jcajce.provider.drbg.DRBG (file:/home/elastic/elasticsearch/lib/tools/security-cli/bcprov-jdk15on-1.61.jar) to constructor sun.security.provider.Sun()
+WARNING: Please consider reporting this to the maintainers of org.bouncycastle.jcajce.provider.drbg.DRBG
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+This tool assists you in the generation of X.509 certificates and certificate
+signing requests for use with SSL/TLS in the Elastic stack.
+
+The 'cert' mode generates X.509 certificate and private keys.
+    * By default, this generates a single certificate and key for use
+       on a single instance.
+    * The '-multiple' option will prompt you to enter details for multiple
+       instances and will generate a certificate and key for each one
+    * The '-in' option allows for the certificate generation to be automated by describing
+       the details of each instance in a YAML file
+
+    * An instance is any piece of the Elastic Stack that requires a SSL certificate.
+      Depending on your configuration, Elasticsearch, Logstash, Kibana, and Beats
+      may all require a certificate and private key.
+    * The minimum required value for each instance is a name. This can simply be the
+      hostname, which will be used as the Common Name of the certificate. A full
+      distinguished name may also be used.
+    * A filename value may be required for each instance. This is necessary when the
+      name would result in an invalid file or directory name. The name provided here
+      is used as the directory name (within the zip) and the prefix for the key and
+      certificate files. The filename is required if you are prompted and the name
+      is not displayed in the prompt.
+    * IP addresses and DNS names are optional. Multiple values can be specified as a
+      comma separated string. If no IP addresses or DNS names are provided, you may
+      disable hostname verification in your SSL configuration.
+
+    * All certificates generated by this tool will be signed by a certificate authority (CA).
+    * The tool can automatically generate a new CA for you, or you can provide your own with the
+         -ca or -ca-cert command line options.
+
+By default the 'cert' mode produces a single PKCS#12 output file which holds:
+    * The instance certificate
+    * The private key for the instance certificate
+    * The CA certificate
+
+If you specify any of the following options:
+    * -pem (PEM formatted output)
+    * -keep-ca-key (retain generated CA key)
+    * -multiple (generate multiple certificates)
+    * -in (generate certificates from an input file)
+then the output will be be a zip file containing individual certificate/key files
+
+Enter password for CA (elastic-stack-ca.p12) :
+Please enter the desired output file [node01.p12]:
+Enter password for node01.p12 :
+
+Certificates written to /home/elastic/elasticsearch/node01.p12
+
+This file should be properly secured as it contains the private key for
+your instance.
+
+This file is a self contained file and can be copied and used 'as is'
+For each Elastic product that you wish to configure, you should copy
+this '.p12' file to the relevant configuration directory
+and then follow the SSL configuration instructions in the product guide.
+
+For client applications, you may only need to copy the CA certificate and
+configure the client to trust this certificate.
+```
+
+Ignore the reflective WARNINGS.
+Accept the defaults.
+
+This file can be your keystore and truststore.
+
+</details>
+<hr>
+
+## Enable SSL on the Transport Network 
+
+The Transport Network is the network between nodes within a cluster (or between clusters).  On a single-node cluster you do not need this.
+On a production cluster you WILL need this.
+
+
+
 # Define role-based access control using Elasticsearch Security
+
+To do this you need to:
+
+- set the built-in user passwords
+- create a role
+- create a user
