@@ -108,7 +108,7 @@ Note that we aren't using a service here as we want to test the startup
 
 ```bash
 $ cd
-$ ./elasticsearch
+$ cd elasticsearch
 $ ./bin/elasticsearch --pidfile mypidfile
 ```
 
@@ -174,30 +174,30 @@ Written in YAML.  Below are in dotted notation, but can be written as YAML dicti
 
 The following `elasticsearch.yml` are worth noting - but there are many mode.
 
-- cluster.name: The name of the cluster (most likely the same for all your nodes)
-- node.name: The name of this node - needs to be unique
-- node.master: true/false - master-eligible role
-- node.data: true/false - data role
-- node.ingest: true/false - ingest role
-- node.attr.some_attribute: node attributes to tag nodes (such as hot/warm architecture)
-- path.repo: The filesystem path to be used as the snapshot repository
-- network.host: Interfaces for Elasticsearch to bind to (typically _local_ and/or _site_)
+- **cluster.name**: The name of the cluster (most likely the same for all your nodes)
+- **node.name**: The name of this node - needs to be unique
+- **node.master**: true/false - master-eligible role
+- **node.data**: true/false - data role
+- **node.ingest**: true/false - ingest role
+- **node.attr.some_attribute**: node attributes to tag nodes (such as hot/warm architecture)
+- **path.repo**: The filesystem path to be used as the snapshot repository
+- **network.host**: Interfaces for Elasticsearch to bind to (typically _local_ and/or _site_)
 -
-- discovery.seed_hosts: List of nodes to 'seed' thus ping on startup (normally these are master-eligible nodes)
-- cluster.initial_master_nodes: List of master-eligible node names for bootstrapping the cluster and preventing split-brain
+- **discovery.seed_hosts**: List of nodes to 'seed' thus ping on startup (normally these are master-eligible nodes)
+- **cluster.initial_master_nodes**: List of master-eligible node names for bootstrapping the cluster and preventing split-brain
 -
-- xpack.security.enabled: true/false
-- xpack.security.transport.ssl.enabled: true/false
-- xpack.security.transport.ssl.verification_mode: full/certificate - node-level verification (DNS), or certificate for just certificate-level verification (each end has certs)
-- xpack.security.transport.ssl.keystore.path: Path to keystore file for transport network encryption
-- xpack.security.transport.ssl.truststore.path: Path to truststore file for transport network encryption
-- xpack.security.http.ssl.keystore.path: Path to keystore file for http network encryption
-- xpack.security.http.ssl.truststore.path: Path to truststore file for http network encryption
+- **xpack.security.enabled**: true/false
+- **xpack.security.transport.ssl.enabled**: true/false
+- **xpack.security.transport.ssl.verification_mode**: full/certificate - node-level verification (DNS), or certificate for just certificate-level verification (each end has certs)
+- **xpack.security.transport.ssl.keystore.path**: Path to keystore file for transport network encryption
+- **xpack.security.transport.ssl.truststore.path**: Path to truststore file for transport network encryption
+- **xpack.security.http.ssl.keystore.path**: Path to keystore file for http network encryption
+- **xpack.security.http.ssl.truststore.path**: Path to truststore file for http network encryption
 
 The most important `jvm.options` are the following:
 
-- -Xms initial heap size
-- -Xmx max heap size
+- **-Xms** initial heap size
+- **-Xmx** max heap size
 
 
 ### Set the JVM heap space
@@ -260,6 +260,8 @@ node.data: true
 node.ingest: false
 node.attr.datacenter: uksouth
 ```
+
+:warning: Note that the `node.ingest` is default `true`, so you need to specifically set this to `false`.
 
 This would be done on each affected node and then restart elasticsearch on that node.
 
@@ -372,6 +374,9 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/security-basic-s
 v7.2 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/encrypting-communications-certificates.html
 
 ### Create the CA file
+
+Use: `./bin/elasticsearch-certutil ca`
+
 ```bash
 [elastic@centos8streams elasticsearch]$ pwd
 /home/elastic/elasticsearch
@@ -406,6 +411,9 @@ Ignore the reflective WARNINGS.
 Accept the defaults.
 
 ### Create the actual node certificate
+
+Use: `./bin/elasticsearch-certutil cert --ca ./elastic-stack-ca.p12 --name node01 --dns centos8streams.preview.local --ip 172.30.5.202`
+
 
 ```bash
 [elastic@centos8streams elasticsearch]$ ./bin/elasticsearch-certutil cert --ca ./elastic-stack-ca.p12 --name node01 --dns centos8streams.preview.local --ip 172.30.5.202
@@ -530,7 +538,7 @@ Serveral accounts needs their passwords changed
 <details>
   <summary>View Solution (click to reveal)</summary>
 
-Use `elasticsearch-setup-passwords`
+Use: `./bin/elasticsearch-setup-passwords`
 
 `auto` - Uses randomly generated passwords
 
@@ -553,7 +561,7 @@ Please confirm that you would like to continue [y/N]
 
 # Define role-based access control using Elasticsearch Security
 
-> :warning: IMPORTANT NOTE: from here on it is assumed you have a working kibana node to work from the "development console" 
+>  :warning: :warning: :warning: IMPORTANT NOTE: from here on it is assumed you have a working kibana node to work from the "development console" 
 
 > See: [Running test servers on docker](Test_servers_on_docker.md)
 
