@@ -8,7 +8,7 @@
 Create a user called `elastic`
 
 <details>
-  <summary>Solution</summary>
+  <summary>View Solution (click to reveal)</summary>
 
 As root, create a user called elastic, set the password (I used something simple, you might not want to do this if your server is accessible from the internet or by other users).  Add that user to the `wheel` group to allow them access to use sudo.
 
@@ -24,7 +24,7 @@ As root, create a user called elastic, set the password (I used something simple
 Set the `nofile` limits to the recommended size
 
 <details>
-  <summary>Solution</summary>
+  <summary>View Solution (click to reveal)</summary>
 
 https://www.elastic.co/guide/en/elasticsearch/reference/current/file-descriptors.html
 https://www.elastic.co/guide/en/elasticsearch/reference/master/setting-system-settings.html
@@ -47,7 +47,7 @@ This change will only take effect the next time the elasticsearch user opens a n
 Set the `vm.max_map_count` to the minimum required value
 
 <details>
-  <summary>Solution</summary>
+  <summary>View Solution (click to reveal)</summary>
 
 https://www.elastic.co/guide/en/elasticsearch/guide/master/_file_descriptors_and_mmap.html
 https://www.elastic.co/guide/en/elasticsearch/reference/master/_maximum_map_count_check.html
