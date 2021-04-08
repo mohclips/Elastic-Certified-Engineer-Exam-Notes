@@ -593,25 +593,121 @@ Restart Elasticsearch afterwards.
 > See: [Running test servers on docker](Test_servers_on_docker.md)
 > See: [Importing Sample data](Importing_sample_data.md)
 
-To do this you need to:
+To do this section you need to:
 
-- create a role
-- create a user
+- create roles and users
+
+:warning: Not all of the security features can be used due to Basic Licence limitations.
+You will see an error like the below if you have a Basic licence.
+
+The following role parameters are not available under Basic licence.
+
+```yaml
+  "field_security" : { ... }, # field level security
+  "query": "..." # document level security
+```
+
+Error message:
+```yaml
+{
+  "error": {
+    "root_cause": [
+      {
+        "type": "security_exception",
+        "reason": "current license is non-compliant for [field and document level security]",
+        "license.expired.feature": "field and document level security"
+      }
+    ],
+    "type": "security_exception",
+    "reason": "current license is non-compliant for [field and document level security]",
+    "license.expired.feature": "field and document level security"
+  },
+  "status": 403
+}
+```
 
 ## Create a role
 
-:warning: This assumes you have ingested the sample data. XXXXXX
+:warning: This assumes you have ingested the Elastic sample data.
+> See: [Importing Sample data](Importing_sample_data.md)
 
-Create roles for the following:
+### Create role and user for the following:
 
-- a role for read only on the XXXXXXX data
-- a role for read only on the YYYYYYY data that only allows access to data that is tagged AAAAAAAA
+- a role called `flights_all` for read only access on the Flight sample data
+- the role should have cluster monitor access
+- a user called `flight_reader_all` that has the role applied
+- the user password should be `flight123`
+
+```json
+PUT _security/role/flights_all
+{
+  "cluster": [ "monitor" ],
+  "indices": [
+    {
+      "names": [ "kibana_sample_data_flights"],
+      "privileges": ["read"]
+    }
+  ]
+}
+
+PUT _security/user/flight_reader_all
+{
+  "password": "flight123",
+  "roles": "flights_all",
+  "full_name": "flights all",
+  "email": "fa@abc.com"
+}
+```
+
+Test the user access
+
+Logout as elastic 
+Login to Kibana as flight_reader_all
+Go to dev console and see what indices you have access to.
 
 
 
-## Create a user
-
-Create users that have the previous roles associated with them
 
 
-### Tests
+
+### Create a role with field and document level security, plus a user for the following:
+
+:warning: can only be applied if you have purchased a licence.
+
+- a role (called flights_australia) for read only access on the Flght data that only allows access to data that has a Destination Country of Australia.
+- the following feilds are allowed to be displayed: Flight Number, Country of Origin and City of Origin
+
+```json
+
+# test your query first
+POST kibana_sample_data_flights/_search
+{
+  "query": {
+        "match": {
+          "DestCountry": "AU"
+        }
+      }
+}
+
+PUT _security/role/flights_australia
+{
+  "indices": [
+    {
+      "names": [
+        "kibana_sample_data_flights"
+      ],
+      "privileges": [
+        "read"
+      ],
+      "field_security": {
+        "grant": ["FlightNum", "OriginCountry", "OriginCityName"]
+      }, 
+      "query": {
+        "match": {
+          "DestCountry": "AU"
+        }
+      }
+    }
+  ]
+}
+```
