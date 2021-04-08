@@ -1,6 +1,15 @@
 # My exam notes
 
-You may find the useful, or not :confused:
+You may find this useful, or not :confused:
+
+:warning: A work in progress :warning:
+
+These notes are my work towards the Elastic Certified Engineer exam.
+The exam is hands on, thus no multiple choice senarios.  You actually need to know it and be able to walk the walk. :D
+
+Elastic are up front with the exam content with a large topic list you can see below.  Thus this enables candidates to be able to work on senarios that are close to what will be in the exam. :joy:
+
+
 
 ## Exam prep guide from Elastic
 
