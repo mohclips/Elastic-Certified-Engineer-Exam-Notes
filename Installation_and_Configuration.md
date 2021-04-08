@@ -591,6 +591,7 @@ Restart Elasticsearch afterwards.
 >  :warning: :warning: :warning: IMPORTANT NOTE: from here on it is assumed you have a working kibana node to work from the "development console" and that you have imported the sample data.
 
 > See: [Running test servers on docker](Test_servers_on_docker.md)
+
 > See: [Importing Sample data](Importing_sample_data.md)
 
 To do this section you need to:
@@ -598,6 +599,7 @@ To do this section you need to:
 - create roles and users
 
 :warning: Not all of the security features can be used due to Basic Licence limitations.
+
 You will see an error like the below if you have a Basic licence.
 
 The following role parameters are not available under Basic licence.
@@ -638,6 +640,9 @@ Error message:
 - a user called `flight_reader_all` that has the role applied
 - the user password should be `flight123`
 
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
 ```json
 PUT _security/role/flights_all
 {
@@ -661,11 +666,11 @@ PUT _security/user/flight_reader_all
 
 Test the user access
 
-Logout as elastic 
-Login to Kibana as flight_reader_all
-Go to dev console and see what indices you have access to.
+- Logout as elastic 
+- Login to Kibana as flight_reader_all
+- Go to dev console and see what indices you have access to.
 
-
+</details>
 
 
 
@@ -676,6 +681,10 @@ Go to dev console and see what indices you have access to.
 
 - a role (called flights_australia) for read only access on the Flght data that only allows access to data that has a Destination Country of Australia.
 - the following feilds are allowed to be displayed: Flight Number, Country of Origin and City of Origin
+- a user called flight_reader_au should have the role applied
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 
@@ -711,3 +720,17 @@ PUT _security/role/flights_australia
   ]
 }
 ```
+
+Create a user for that role
+
+```yaml
+PUT _security/user/flight_reader_au
+{
+  "password": "flight123",
+  "roles": "flights_australia",
+  "full_name": "flights australia",
+  "email": "fau@abc.com"
+}
+```
+
+</details>
