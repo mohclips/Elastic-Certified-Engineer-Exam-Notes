@@ -366,6 +366,10 @@ Create the CA file and node certificate.
 <details>
   <summary>View Solution (click to reveal)</summary>
 
+https://www.elastic.co/guide/en/elasticsearch/reference/current/security-basic-setup.html
+
+v7.2 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/encrypting-communications-certificates.html
+
 ### Create the CA file
 ```bash
 [elastic@centos8streams elasticsearch]$ pwd
@@ -451,7 +455,7 @@ If you specify any of the following options:
     * -in (generate certificates from an input file)
 then the output will be be a zip file containing individual certificate/key files
 
-:point_right:Enter password for CA (elastic-stack-ca.p12) :
+Enter password for CA (elastic-stack-ca.p12) :
 Please enter the desired output file [node01.p12]:
 Enter password for node01.p12 :
 
@@ -481,8 +485,41 @@ This file can be your keystore and truststore.
 
 The Transport Network is the network between nodes within a cluster (or between clusters).  On a single-node cluster you do not need this.
 On a production cluster you WILL need this.
+<details>
+  <summary>View Solution (click to reveal)</summary>
+  
+### Enable SSL on Transport Network
 
+https://www.elastic.co/guide/en/elasticsearch/reference/current/security-basic-setup.html#encrypt-internode-communication
 
+v7.2 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/encrypting-internode.html
+
+Edit the elasticsearch.yml file and set
+```yaml
+cluster.initial_master_nodes: ["node01"]
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.keystore.path: ${node.name}.p12
+xpack.security.transport.ssl.truststore.path: ${node.name}.p12
+```
+
+`${node.name}` is an elasticsearch environment variable.  
+
+If you set a password when creating the node certificate then you need to do the following, where it will ask you for the password each time.
+
+```bash
+$ ./bin/elasticsearch-keystore create 
+
+$ ./bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password
+
+$ ./bin/elasticsearch-keystore add xpack.security.transport.ssl.truststore.secure_password
+```
+
+Restart Elasticsearch afterwards.
+
+</details>
+<hr>
 
 # Define role-based access control using Elasticsearch Security
 
@@ -491,3 +528,7 @@ To do this you need to:
 - set the built-in user passwords
 - create a role
 - create a user
+
+## Set the built-in user passwords
+
+Serveral accounts needs their passwords changed
