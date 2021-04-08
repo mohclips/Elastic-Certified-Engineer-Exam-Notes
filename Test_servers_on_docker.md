@@ -58,3 +58,5 @@ Pulling esnode (docker.elastic.co/elasticsearch/elasticsearch:7.2.0)...
 ```
 
 # Add data to query
+
+> See: [Importing Sample data](Importing_sample_data.md)
