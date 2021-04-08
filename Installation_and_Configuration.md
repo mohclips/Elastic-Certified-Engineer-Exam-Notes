@@ -244,7 +244,7 @@ Set the cluster to the following
   <summary>View Solution (click to reveal)</summary>
 
 
-Edit the jvm.options file
+Edit the elasticsearch.yml file
 
 ```bash
 [elastic@centos8streams config]$ cd /home/elastic/elasticsearch/config
