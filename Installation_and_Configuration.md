@@ -679,9 +679,9 @@ Test the user access
 
 :warning: can only be applied if you have purchased a licence.
 
-- a role (called flights_australia) for read only access on the Flght data that only allows access to data that has a Destination Country of Australia.
-- the following feilds are allowed to be displayed: Flight Number, Country of Origin and City of Origin
-- a user called flight_reader_au should have the role applied
+- a role called `flights_australia` for read only access on the Flght data that only allows access to data that has a Destination Country of Australia.
+- the following fields are allowed to be displayed: Flight Number, Country of Origin and City of Origin
+- a user called `flight_reader_au` should have the role applied to it
 
 <details>
   <summary>View Solution (click to reveal)</summary>
