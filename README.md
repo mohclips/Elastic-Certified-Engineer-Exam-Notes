@@ -11,6 +11,12 @@ Pay particular attention to the version of ElasticSearch used in the exam.
 (this changes 1st July 2021)
 
 
+# Using the elastic.co docs
+
+It is very important you start to use the elastic.co website instead of google to search for solutions.  The website is available to you in the exam.
+
+Use the Search icon at the right hand top of the site (highlighted in Yellow)
+![search engine](images/WebSiteSearchIcon.jpg)
 
 # Topics (pre-July 2021)
 Based on https://www.elastic.co/training/elastic-certified-engineer-exam
