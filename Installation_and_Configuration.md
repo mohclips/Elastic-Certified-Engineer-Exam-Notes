@@ -588,9 +588,10 @@ Restart Elasticsearch afterwards.
 
 # Define role-based access control using Elasticsearch Security
 
->  :warning: :warning: :warning: IMPORTANT NOTE: from here on it is assumed you have a working kibana node to work from the "development console" 
+>  :warning: :warning: :warning: IMPORTANT NOTE: from here on it is assumed you have a working kibana node to work from the "development console" and that you have imported the sample data.
 
 > See: [Running test servers on docker](Test_servers_on_docker.md)
+> See: [Importing Sample data](Importing_sample_data.md)
 
 To do this you need to:
 
@@ -598,3 +599,19 @@ To do this you need to:
 - create a user
 
 ## Create a role
+
+:warning: This assumes you have ingested the sample data. XXXXXX
+
+Create roles for the following:
+
+- a role for read only on the XXXXXXX data
+- a role for read only on the YYYYYYY data that only allows access to data that is tagged AAAAAAAA
+
+
+
+## Create a user
+
+Create users that have the previous roles associated with them
+
+
+### Tests
