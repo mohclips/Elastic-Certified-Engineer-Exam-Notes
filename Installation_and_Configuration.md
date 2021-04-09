@@ -644,6 +644,9 @@ Error message:
   <summary>View Solution (click to reveal)</summary>
 
 
+https://www.elastic.co/guide/en/elasticsearch/reference/7.2/built-in-roles.html
+
+https://www.elastic.co/guide/en/elasticsearch/reference/7.2/security-privileges.html
 
 ```json
 PUT _security/role/flights_all
@@ -660,7 +663,7 @@ PUT _security/role/flights_all
 PUT _security/user/flight_reader_all
 {
   "password": "flight123",
-  "roles": "flights_all",
+  "roles": [ "kibana_user", "flights_all" ],
   "full_name": "flights all",
   "email": "fa@abc.com"
 }
