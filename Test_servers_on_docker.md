@@ -35,24 +35,19 @@ usermod -aG docker elastic
 # Copy example server git repo
 
 ```bash
-$ sudo dnf install git -y
-
 $ cd
 
-$ git clone https://github.com/glenacota/elastic-training-repo.git
+$ wget https://raw.githubusercontent.com/mohclips/Elastic-Certified-Engineer-Exam-Notes/main/DockerComposeExamples/1es-1kb-xpackSec.yml
 ```
+
+> Username: elastic
+
+> Password: Password01
 
 # Boot up a server 
 
-#FIXME: does not work, needs custom files
-
-
-:warning: We use the `allocation-awareness.yml` as it has xpack security enabled
-
 ```bash
-[elastic@centos8streams ~]$ cd elastic-training-repo/clusters-to-go/7.2.0/
-
-[elastic@centos8streams 7.2.0]$ docker-compose -f allocation-awareness.yml up
+[elastic@centos8streams]$ docker-compose -f 1es-1kb-xpackSec.yml up
 ...
 
 ```
