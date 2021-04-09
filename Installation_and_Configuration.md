@@ -643,14 +643,16 @@ Error message:
 <details>
   <summary>View Solution (click to reveal)</summary>
 
+
+
 ```json
 PUT _security/role/flights_all
 {
   "cluster": [ "monitor" ],
   "indices": [
     {
-      "names": [ "kibana_sample_data_flights"],
-      "privileges": ["read"]
+      "names": ["kibana_sample_data_flights"],
+      "privileges": ["read","view_index_metadata", "monitor"]
     }
   ]
 }
@@ -667,8 +669,34 @@ PUT _security/user/flight_reader_all
 Test the user access
 
 - Logout as elastic 
-- Login to Kibana as flight_reader_all
+- Login to Kibana as `flight_reader_all` password `flight123`
 - Go to dev console and see what indices you have access to.
+
+Check that we can access the index stats (monitor)
+and only the index we have allowed access to.
+
+```json
+GET _cat/indices
+
+green open kibana_sample_data_flights R1AptZYHTrivEUEmtftubg 1 0 13059 0 6.6mb 6.6mb
+```
+
+Check that we can query the index.  Get the document count
+
+```json
+GET kibana_sample_data_flights/_count
+
+{
+  "count" : 13059,
+  "_shards" : {
+    "total" : 1,
+    "successful" : 1,
+    "skipped" : 0,
+    "failed" : 0
+  }
+}
+```
+
 
 </details>
 
@@ -732,5 +760,13 @@ PUT _security/user/flight_reader_au
   "email": "fau@abc.com"
 }
 ```
+
+Test
+
+- Logout as elastic 
+- Login to Kibana as `flight_reader_au`
+- Go to dev console and see what indices you have access to.
+
+#TODO:  write a query to count the number of documents accessible
 
 </details>
