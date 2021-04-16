@@ -9,7 +9,9 @@ The exam is hands on, thus no multiple choice senarios.  You actually need to kn
 
 Elastic are up front with the exam content with a large topic list you can see below.  Thus this enables candidates to be able to work on senarios that are close to what will be in the exam. :joy:
 
+## Docker images
 
+TBC
 
 ## Exam prep guide from Elastic
 
