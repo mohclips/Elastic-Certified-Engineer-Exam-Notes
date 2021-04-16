@@ -708,7 +708,7 @@ GET kibana_sample_data_flights/_count
 
 ### Create a role with field and document level security, plus a user for the following:
 
-:warning: can only be applied if you have purchased a licence.
+:warning: can only be applied if you have purchased an elastic licence. This will not work on the Basic/Free licence.
 
 - a role called `flights_australia` for read only access on the Flght data that only allows access to data that has a Destination Country of Australia.
 - the following fields are allowed to be displayed: Flight Number, Country of Origin and City of Origin
