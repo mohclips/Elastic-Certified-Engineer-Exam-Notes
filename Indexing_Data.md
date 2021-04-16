@@ -466,6 +466,8 @@ Get document count from index to check is has reduced.
 ```json 
 GET accounts-raw/_count
 
+// Output 
+
 {
   "count" : 1000,
   "_shards" : {
@@ -527,6 +529,8 @@ https://www.elastic.co/guide/en/elasticsearch/reference/7.2/indices-aliases.html
 ```json
 GET accounts-raw/_mapping/field/gender
 
+// Output 
+
 {
   "accounts-raw" : {
     "mappings" : {
@@ -577,6 +581,8 @@ POST /_aliases
 ```json
 GET accounts-male/_count
 
+// Output 
+
 {
   "count" : 507,
   "_shards" : {
@@ -602,8 +608,7 @@ POST accounts-raw/_search?filter_path=hits.total.value
   }
 }
 
-
-Output:
+// Output 
 
 {
   "hits" : {
@@ -708,6 +713,8 @@ Check the mappings of this new index
 ```json
 GET accounts-new\_mapping
 
+// Output 
+
 {
   "accounts-new" : {
     "mappings" : {
@@ -767,7 +774,7 @@ POST accounts-new\_search?filter_path=hits.total.value
   }
 }
 
-Answer:
+// Output 
 
 {
   "hits" : {
@@ -910,9 +917,10 @@ POST _reindex
   },
   "dest":   { "index": "accounts-female" }
 }
+```
 
-// Check
-
+Check
+```json
 GET accounts-female/_count?filter_path=count
 
 // Output 
@@ -920,9 +928,10 @@ GET accounts-female/_count?filter_path=count
 {
   "count" : 493
 }
+```
 
-// Check again
-
+Check again
+```json
 GET /accounts-female/_search?filter_path=*.*.*.gender
 
 // Output 
@@ -1152,6 +1161,9 @@ POST _ingest/pipeline/_simulate
   ]
 }
 ```
+
+Here you will get a lot of output, make sure it matches what you expect to see.
+
 
 Now copy the working pipeline
 
