@@ -1112,7 +1112,7 @@ POST _ingest/pipeline/_simulate
         "script": {
           "tag": "39s and over female bonus",
           "if": """
-            if (ctx.age > 60) { 
+            if (ctx.age > 39) { 
               if (ctx.gender=="F") { 
                 return true 
               }
