@@ -30,6 +30,8 @@ Check details:
 ```json
 GET accounts-raw/_settings
 
+// Output 
+
 {
   "accounts-raw" : {
     "settings" : {
@@ -76,6 +78,8 @@ Check data was imported
 
 ```json
 GET accounts-raw/_count
+
+// Output 
 
 {
   "count" : 1000,
@@ -137,6 +141,8 @@ Check the index count was increased
 ```json
 GET accounts-raw/_count
 
+// Output 
+
 {
   "count" : 1001,
   "_shards" : {
@@ -151,6 +157,8 @@ GET accounts-raw/_count
 Read back that document that was indexed
 ```json
 GET accounts-raw/_doc/10000
+
+// Output 
 
 {
   "_index" : "accounts-raw",
@@ -211,6 +219,8 @@ PUT accounts-raw/_bulk
 ```
 
 ```json
+// Output 
+
 {
   "took" : 41,
   "errors" : false,
@@ -241,6 +251,8 @@ Check document count has increased
 ```json
 GET accounts-raw/_count
 
+// Output 
+
 {
   "count" : 1002,
   "_shards" : {
@@ -256,6 +268,8 @@ Read back that document just created
 
 ```json
 GET accounts-raw/_doc/10001
+
+// Output 
 
 {
   "_index" : "accounts-raw",
@@ -301,6 +315,8 @@ POST accounts-raw/_update/10001
 
 GET accounts-raw/_doc/10001?filter_path=*.age
 
+// Output 
+
 {
   "_source" : {
     "age" : 84
@@ -312,6 +328,8 @@ GET accounts-raw/_doc/10001?filter_path=*.age
 PUT accounts-raw/_bulk
 {"update":{"_id":"10001"}}
 {"doc": {"age":84}}
+
+// Output 
 
 {
   "took" : 43,
@@ -342,6 +360,8 @@ Read back the document to check it has been updated
 
 ```json
 GET accounts-raw/_doc/10001
+
+// Output 
 
 {
   "_index" : "accounts-raw",
@@ -385,6 +405,8 @@ Delete the following documents from the `accounts-raw` index
 DELETE accounts-raw/_doc/10001
 DELETE accounts-raw/_doc/10000?filter_path=result
 
+// Output 
+
 {
   "result" : "deleted"
 }
@@ -394,6 +416,8 @@ DELETE accounts-raw/_doc/10000?filter_path=result
 PUT accounts-raw/_bulk
 {"delete":{"_id":"10000"}}
 {"delete":{"_id":"10001"}}
+
+// Output 
 
 {
   "took" : 67,
@@ -760,6 +784,7 @@ Answer:
 
 Create a new index with a dynamic mapping `accounts-fullname` where the `firstname` and `lastname` fields are combined to create the `fullname` field.
 
+:anger: This does not work. #FIXME:
 
 <details>
   <summary>View Solution (click to reveal)</summary>
@@ -790,7 +815,7 @@ PUT accounts_fullname
 }
 ```
 
-Okay, to this doesn't work, nor does the example on the website
+Okay, to this doesn't work, nor does the example on the website (below)
 
 ```json
 PUT my_index
@@ -863,10 +888,15 @@ POST _reindex
 }
 
 GET accounts-2021/_count?filter_path=count
+
+// Output 
+
 {
   "count" : 1000
 }
 ```
+
+reindex into `accounts-female`
 
 ```json
 POST _reindex
@@ -881,12 +911,22 @@ POST _reindex
   "dest":   { "index": "accounts-female" }
 }
 
+// Check
+
 GET accounts-female/_count?filter_path=count
+
+// Output 
+
 {
   "count" : 493
 }
 
+// Check again
+
 GET /accounts-female/_search?filter_path=*.*.*.gender
+
+// Output 
+
 {
   "hits" : {
     "hits" : [
@@ -909,7 +949,7 @@ Give all female account holders in `accounts-2021` a 25% bonus increase on their
 
 <details>
   <summary>View Solution (click to reveal)</summary>
-  
+
 Get two example docs
 ```json
 GET /accounts-raw/_search?q=gender:F&size=2
@@ -921,6 +961,8 @@ GET /accounts-raw/_doc/_mget?filter_path=*.*.balance
 {
     "ids" : ["13", "25"]
 }
+
+//Output
 
 {
   "docs" : [
@@ -953,6 +995,9 @@ POST accounts-2021/_update_by_query
   }
 }
 
+
+// Output
+
 {
   "took" : 369,
   "timed_out" : false,
@@ -979,6 +1024,8 @@ GET /accounts-2021/_doc/_mget?filter_path=*.*.balance
 {
     "ids" : ["13", "25"]
 }
+
+// Output
 
 {
   "docs" : [
@@ -1152,6 +1199,8 @@ Then reindex the data with that new pipeline
 ```json
 POST accounts-2021/_update_by_query?pipeline=accounts-ingest
 
+// Output - check the `updated` field
+
 {
   "took" : 651,
   "timed_out" : false,
@@ -1192,6 +1241,7 @@ POST accounts-raw/_search?filter_path=*.*._id
   }
 }
 
+// Output 
 
 {
   "hits" : {
@@ -1209,6 +1259,8 @@ Original data
 ```json
 GET accounts-raw/_doc/25?filter_path=*.balance,*.firstname,*.lastname
 
+// Output 
+
 {
   "_source" : {
     "balance" : 40540,
@@ -1222,6 +1274,8 @@ GET accounts-raw/_doc/25?filter_path=*.balance,*.firstname,*.lastname
 Updated data
 ```json
 GET accounts-2021/_doc/25?filter_path=*.balance,*.full_name,*.tags
+
+// Output 
 
 {
   "_source" : {
