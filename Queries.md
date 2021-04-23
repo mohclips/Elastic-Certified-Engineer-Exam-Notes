@@ -528,6 +528,8 @@ GET _search/template?filter_path=*.*.*.text_entry
 
 # Write and execute a query that searches across multiple clusters
 
+https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-search.html
+
 #TODO:  Need a couple of clusters, though the theory is easy
 
 > Note: just split the remote clusters with commas
