@@ -11,7 +11,7 @@ v7.2 https://www.elastic.co/guide/en/kibana/7.2/getting-started.html#get-data-in
 The sample data is required to complete the exercises in these notes.
 
 ## Click on Try our sample data
-![Kibana-startscreen.jpg](images/Kibana-startscreen.jpg)
+![kibana-startscreen.jpg](images/kibana-startscreen.jpg)
 
 ## Add all sample datasets
 ![add-data-to-kibana.jpg](images/add-data-to-kibana.jpg)
