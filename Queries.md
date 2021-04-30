@@ -1,13 +1,13 @@
 # Queries
 
-These example questions use the eCommerce sample data and the Shakespeare data.
+:warning: These example questions use the eCommerce sample data and the Shakespeare data.
 
 
 # Prerequisite
 
-Download the Shakespeare data, create an index mapping as below and insert the data.
+:scroll: Download the Shakespeare data, create an index mapping as below and insert the data.
 
-https://download.elastic.co/demos/kibana/gettingstarted/shakespeare_6.0.json
+:arrow_down: https://download.elastic.co/demos/kibana/gettingstarted/shakespeare_6.0.json
 
 
 ```json
@@ -33,7 +33,10 @@ $ curl -u "elastic:Password01" -s -H "Content-Type: application/x-ndjson" -XPUT 
 
 ## Full Text queries
 
-How many times do the words `brothers`, `blood` appear in the `shakespeare` data?
+:question: How many times do the words `brothers`, `blood` appear in the `shakespeare` data?
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET shakespeare/_search
@@ -50,7 +53,13 @@ GET shakespeare/_search
 
 > Answer: 761
 
-How many times do the words `brothers` and `blood` appear in the `shakespeare` data?
+</details>
+<hr>
+
+:question: How many times do the words `brothers` and `blood` appear in the `shakespeare` data?
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET shakespeare/_search
@@ -68,7 +77,13 @@ GET shakespeare/_search
 
 > Answer: 4
 
-How many times does the phrase `brothers blood` appear in the `shakespeare` data?
+</details>
+<hr>
+
+:question: How many times does the phrase `brothers blood` appear in the `shakespeare` data?
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET shakespeare/_search
@@ -85,7 +100,13 @@ GET shakespeare/_search
 
 > Answer: 3
 
-Find how many lines there are, where `Prince Henry` is mentioned or is a speaker in the `shakespeare` data?
+</details>
+<hr>
+
+:question: Find how many lines there are, where `Prince Henry` is mentioned or is a speaker in the `shakespeare` data?
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET shakespeare/_search
@@ -102,21 +123,23 @@ GET shakespeare/_search
 
 > Answer: 22
 
+</details>
+<hr>
+
 ## Term Level queries
-
-
-## solution
 
 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/term-level-queries.html
 
 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/full-text-queries.html
 
 
-
 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/query-dsl-match-query-phrase.html
 
 
-How many times is `Hamlet` mentioned as a play in the `shakespeare` index?
+:question: How many times is `Hamlet` mentioned as a play in the `shakespeare` index?
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET shakespeare/_search
@@ -133,9 +156,13 @@ GET shakespeare/_search
 
 > Answer: 4244 times
 
+</details>
+<hr>
 
+:question: How many times is `Alls well that ends well` mentioned as a play in the `shakespeare` index?
 
-How many times is `Alls well that ends well` mentioned as a play in the `shakespeare` index?
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET shakespeare/_search
@@ -152,8 +179,13 @@ GET shakespeare/_search
 
 > Answer: 3083
 
+</details>
+<hr>
 
-How many lines do kings `Henry V` and `Henry VI` have?
+:question: How many lines do kings `Henry V` and `Henry VI` have?
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET shakespeare/_search
@@ -170,8 +202,13 @@ GET shakespeare/_search
 
 > Answer: 2003
 
+</details>
+<hr>
 
-How many lines do all the kings have in the `shakespeare` index?
+:question: How many lines do all the kings have in the `shakespeare` index?
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET shakespeare/_search
@@ -186,8 +223,13 @@ GET shakespeare/_search
 
 > Answer: 7250
 
+</details>
+<hr>
 
-How many times do people called `Henry` enter the scene?
+:question: How many times do people called `Henry` enter the scene?
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET shakespeare/_search
@@ -205,7 +247,13 @@ GET shakespeare/_search
 
 > Answer: 33
 
-How many speechs number in range between `400` and `402` ?
+</details>
+<hr>
+
+:question: How many speechs number in range between `400` and `402` ?
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET shakespeare/_search
@@ -223,7 +271,8 @@ GET shakespeare/_search
 
 > Answer: 10
 
-
+</details>
+<hr>
 
 
 
@@ -236,8 +285,6 @@ https://www.elastic.co/guide/en/elasticsearch/reference/7.2/query-dsl-bool-query
 
 
 
-## solution
-
 |Occur|Description|
 |----|----|
 | must|The clause (query) must appear in matching documents and will contribute to the score.|
@@ -247,7 +294,10 @@ https://www.elastic.co/guide/en/elasticsearch/reference/7.2/query-dsl-bool-query
 
 
 
-How many times is `Desdemona` mentioned in `Othello` but not by the leading character `Othello` himself?
+:question: How many times is `Desdemona` mentioned in `Othello` but not by the leading character `Othello` himself?
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET shakespeare/_search
@@ -279,7 +329,14 @@ GET shakespeare/_search
 }    
 ```
 
-Filter the previous query results to only show those that also mention the word `sweet`
+</details>
+<hr>
+
+:question: Filter the previous query results to only show those that also mention the word `sweet`
+
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET shakespeare/_search
@@ -315,14 +372,17 @@ GET shakespeare/_search
   }
 } 
 ```
+</details>
+<hr>
 
 # Highlight the search terms in the response of a query
 
-In the spoken lines of the play, highlight the word `Hamlet` starting the highlight with `"#aaa#` and ending it with `#bbb#`
-
-## solution
-
 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-request-highlighting.html
+
+:question: In the spoken lines of the play, highlight the word `Hamlet` starting the highlight with `"#aaa#` and ending it with `#bbb#`
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET shakespeare/_search
@@ -342,15 +402,17 @@ GET shakespeare/_search
     }
 }
 ```
-
+</details>
+<hr>
 
 # Sort the results of a query by a given set of requirements
 
-Return all of `Othellos` lines in reverse order.
-
-## solution
-
 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-request-sort.html
+
+:question: Return all of `Othellos` lines in reverse order.
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET shakespeare/_search
@@ -369,16 +431,20 @@ GET shakespeare/_search
     ]
 }
 ```
+</details>
+<hr>
 
 # Implement pagination of the results of a search query
 
-Paginate the `Othello` play, `20` speech lines per page, stating from line `40`.
-
-What is the first line on this page?
-
-## solution
-
 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-request-from-size.html
+
+:question: Paginate the `Othello` play, `20` speech lines per page, stating from line `40`.
+
+:question: What is the first line on this page?
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
 
 ```json
 GET shakespeare/_search
@@ -408,12 +474,17 @@ GET shakespeare/_search
       }
 ```
 
+</details>
+<hr>
+
 # Apply fuzzy matching to a query
 
-Using fuzzy query, show that a mis-type of the speaker name `OTHELO` still returns the real name `OTHELLO` lines
-## solution
-
 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/query-dsl-fuzzy-query.html
+
+:question: Using fuzzy query, show that a mis-type of the speaker name `OTHELO` still returns the real name `OTHELLO` lines
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET shakespeare/_search
@@ -430,16 +501,19 @@ GET shakespeare/_search
 
 > Note: this is like the "DId you mean x?" suggestions you see on the web.
 
+</details>
+<hr>
+
 # Define and use a search template
-
-Create and use a search template that returns the lines of a person in a play.
-
-Show all lines that belong to `Attendant` in the play `Cymbeline`
-
-## solution
 
 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-template.html
 
+:question: Create and use a search template that returns the lines of a person in a play.
+
+:question: Show all lines that belong to `Attendant` in the play `Cymbeline`
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 POST _scripts/get_lines
@@ -522,8 +596,8 @@ GET _search/template?filter_path=*.*.*.text_entry
   }
 }
 ```
-
-
+</details>
+<hr>
 
 
 # Write and execute a query that searches across multiple clusters
@@ -533,9 +607,13 @@ https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-search.html
 #TODO:  Need a couple of clusters, though the theory is easy
 
 > Note: just split the remote clusters with commas
+
 > Then append the index to each with a colon
 
 local_index,remote1:index1,remote2:index2
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET local_index,remote_cluster1:that_remote_index,remote_cluster2:that_other_remote_index
@@ -545,3 +623,5 @@ GET local_index,remote_cluster1:that_remote_index,remote_cluster2:that_other_rem
   }
 }
 ```
+</details>
+<hr>

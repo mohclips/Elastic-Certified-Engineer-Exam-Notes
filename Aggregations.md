@@ -34,7 +34,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-aggregations-
 
 <hr>
 
-Question: Pull the number of sales, Max, Min, Average and total sales for the American customers.
+:question: Pull the number of sales, Max, Min, Average and total sales for the American customers.
 
 <details>
   <summary>View Solution (click to reveal)</summary>
@@ -117,7 +117,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-aggregations-
 - Significant Text Aggregation
 - Terms Aggregation
 
-Question: Display all sales per day
+:question: Display all sales per day
 
 <details>
   <summary>View Solution (click to reveal)</summary>
@@ -168,7 +168,7 @@ GET kibana_sample_data_ecommerce/_search?filter_path=aggregations
 # Write and execute aggregations that contain sub-aggregations
 
 
-Question: Display all sales per day broken down by sales category
+:question: Display all sales per day broken down by sales category
 
 <details>
   <summary>View Solution (click to reveal)</summary>
@@ -319,7 +319,7 @@ GET kibana_sample_data_ecommerce/_search?filter_path=aggregations
 
 # Write and execute pipeline aggregations
 
-Question: Work out the weekly sales maximum?
+:question: Work out the weekly sales maximum?
 
 (Which week has the maximum sales?)
 
