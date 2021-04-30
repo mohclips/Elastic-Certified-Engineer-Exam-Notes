@@ -4,7 +4,7 @@
 
 We will be using the `kibana_sample_data_ecommerce` index data for these examples.
 
-Show results only
+Show only the aggs results, and not all of the matches: 
 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/returning-only-agg-results.html
 
 
@@ -32,10 +32,12 @@ https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-aggregations-
 - Value Count Aggregation
 - Weighted Avg Aggregation
 
+<hr>
 
 Question: Pull the number of sales, Max, Min, Average and total sales for the American customers.
 
-## solution
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-aggregations-metrics-extendedstats-aggregation.html
 
@@ -81,8 +83,10 @@ GET kibana_sample_data_ecommerce/_search?filter_path=aggregations
     }
   }
 }
-
 ```
+</details>
+<hr>
+
 ## Bucket Aggregations
 
 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-aggregations-bucket.html
@@ -113,7 +117,10 @@ https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-aggregations-
 - Significant Text Aggregation
 - Terms Aggregation
 
-Display all sales per day
+Question: Display all sales per day
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET kibana_sample_data_ecommerce/_search?filter_path=aggregations
@@ -154,18 +161,17 @@ GET kibana_sample_data_ecommerce/_search?filter_path=aggregations
         },
         ...
 ```
-
-
-
-
+</details>
+<hr>
 
 
 # Write and execute aggregations that contain sub-aggregations
 
 
-Display all sales per day broken down by sales category
+Question: Display all sales per day broken down by sales category
 
-## solution
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 > - The `date_histogram` is the Y-axis
 > - Then you need to group by category
@@ -264,10 +270,16 @@ GET kibana_sample_data_ecommerce/_search?filter_path=aggregations
 }
 ```
 
+</details>
+<hr>
 
-BONUS: Order the sales price in descending order
+BONUS QUESTION: Order the sales price in descending order
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 In the `group_by_category` agg, we need to order by the `total_sales_price` agg.
+
 
 ```json
 GET kibana_sample_data_ecommerce/_search?filter_path=aggregations
@@ -302,11 +314,17 @@ GET kibana_sample_data_ecommerce/_search?filter_path=aggregations
   }
 }
 ```
-
+</details>
+<hr>
 
 # Write and execute pipeline aggregations
 
-Work out the maximum weekly sales?
+Question: Work out the weekly sales maximum?
+
+(Which week has the maximum sales?)
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET kibana_sample_data_ecommerce/_search?filter_path=aggregations
@@ -391,3 +409,6 @@ GET kibana_sample_data_ecommerce/_search?filter_path=aggregations
 }
 
 ```
+
+</details>
+<hr>
