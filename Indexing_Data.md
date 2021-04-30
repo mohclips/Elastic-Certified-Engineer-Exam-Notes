@@ -6,7 +6,7 @@ This section of the Docs https://www.elastic.co/guide/en/elasticsearch/reference
 
 ## part 1
 
-Create an index with the following requirements:
+:question: Create an index with the following requirements:
 
 - **Name**: accounts-raw
 - **Shards**: 1
@@ -54,7 +54,7 @@ GET accounts-raw/_settings
 
 ## part 2
 
-Download the following data in bulk insert it into the `accounts-raw` index
+:question: Download the following data in bulk insert it into the `accounts-raw` index
 
 https://github.com/elastic/elasticsearch/blob/master/docs/src/test/resources/accounts.json
  
@@ -105,7 +105,7 @@ PUT /accounts-raw/_bulk
 
 ## Index a document
 
-Index the following document to the `accounts-raw` index
+:question: Index the following document to the `accounts-raw` index
 ```json
 {
 "account_number":10000,
@@ -188,7 +188,7 @@ GET accounts-raw/_doc/10000
 
 ## Create a document
 
-Create the following document to the `accounts-raw` index
+:question: Create the following document to the `accounts-raw` index
 
 ```json
 "account_number":10001,
@@ -299,9 +299,9 @@ GET accounts-raw/_doc/10001
 
 ## Update a document
 
-Opps, we made a mistake, account holder `Millie Cross` is not `92` years of `age` but actually `84`.
+:question: Opps, we made a mistake, account holder `Millie Cross` is not `92` years of `age` but actually `84`.
 
-Update the document in the `accounts-raw` index
+:question: Update the document in the `accounts-raw` index
 
 <details>
   <summary>View Solution (click to reveal)</summary>
@@ -391,9 +391,9 @@ GET accounts-raw/_doc/10001
 
 ## Delete a document
 
-Account holders Millie and George Cross have moved to another bank, remove their accounts.
+:question: Account holders Millie and George Cross have moved to another bank, remove their accounts.
 
-Delete the following documents from the `accounts-raw` index
+:question: Delete the following documents from the `accounts-raw` index
 
 - **id**: 10000
 - **id**: 10001
@@ -486,7 +486,7 @@ GET accounts-raw/_count
 
 ## part 1
 
-Define an index alias for `accounts-raw` called `accounts-all`
+:question: Define an index alias for `accounts-raw` called `accounts-all`
 
 <details>
   <summary>View Solution (click to reveal)</summary>
@@ -515,9 +515,9 @@ GET accounts-all/_count
 
 ## part 2
 
-Define an index alias for `accounts-raw` called `accounts-male`
+:question: Define an index alias for `accounts-raw` called `accounts-male`
 
-Apply a filter to only show the male account owners.
+:question: Apply a filter to only show the male account owners.
 
 <details>
   <summary>View Solution (click to reveal)</summary>
@@ -594,7 +594,7 @@ GET accounts-male/_count
 }
 ```
 
-4. BONUS: Run a query to do the same on `accounts-raw` index
+4. :question: BONUS: Run a query to do the same on `accounts-raw` index
 
 Extra bonus: only print the total hits
 
@@ -625,7 +625,7 @@ POST accounts-raw/_search?filter_path=hits.total.value
 
 ## Part 1
 
-Create an index template called `accounts-tmpl` with the following requirements:
+:question: Create an index template called `accounts-tmpl` with the following requirements:
 
     "account_number" : integer,
     "balance" : long,
@@ -699,7 +699,7 @@ PUT _template/accounts-tmpl
 
 ## Part 2
 
-Import the account data into a new index called `accounts-new`
+:question: Import the account data into a new index called `accounts-new`
 
 <details>
   <summary>View Solution (click to reveal)</summary>
@@ -789,7 +789,7 @@ POST accounts-new\_search?filter_path=hits.total.value
 
 # Define and use a dynamic template that satisfies a given set of requirements
 
-Create a new index with a dynamic mapping `accounts-fullname` where the `firstname` and `lastname` fields are combined to create the `fullname` field.
+:question: Create a new index with a dynamic mapping `accounts-fullname` where the `firstname` and `lastname` fields are combined to create the `fullname` field.
 
 :anger: This does not work. #FIXME:
 
@@ -873,9 +873,9 @@ you will find full_name field is not created?!?
 # Use the Reindex API and Update By Query API to reindex and/or update documents
 
 ## Part 1
-Reindex the `accounts-raw` index into `accounts-2021`.
+:question: Reindex the `accounts-raw` index into `accounts-2021`.
 
-Then reindex `accounts-2021` into `accounts-female` index where only the female account holders are present.
+:question: Then reindex `accounts-2021` into `accounts-female` index where only the female account holders are present.
 
 <details>
   <summary>View Solution (click to reveal)</summary>
@@ -954,7 +954,7 @@ GET /accounts-female/_search?filter_path=*.*.*.gender
 </details>
 
 ## Part 2
-Give all female account holders in `accounts-2021` a 25% bonus increase on their balance :)
+:question: Give all female account holders in `accounts-2021` a 25% bonus increase on their balance :)
 
 <details>
   <summary>View Solution (click to reveal)</summary>
@@ -1057,7 +1057,7 @@ GET /accounts-2021/_doc/_mget?filter_path=*.*.balance
 
 # Define and use an ingest pipeline that satisfies a given set of requirements, including the use of Painless to modify documents
 
-Apply a pipeline called `accounts-ingest` to the data in `accounts-2021` with the following requirements:
+:question: Apply a pipeline called `accounts-ingest` to the data in `accounts-2021` with the following requirements:
 
 - Add a `tag` called `pipeline_ingest` to show that the document was ingested via the pipeline 
 - Combine the `firstname` and `lastname ` fields into a new field called `full_name`
