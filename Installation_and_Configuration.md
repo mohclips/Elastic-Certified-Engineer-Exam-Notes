@@ -5,7 +5,7 @@
 ## Preparing the host
 
 ### Create a user
-Create a user called `elastic`
+:question: Create a user called `elastic`
 
 <details>
   <summary>View Solution (click to reveal)</summary>
@@ -21,7 +21,7 @@ As root, create a user called elastic, set the password (I used something simple
 <hr>
 
 ### Set nofile limits
-Set the `nofile` limits to the recommended size
+:question: Set the `nofile` limits to the recommended size
 
 <details>
   <summary>View Solution (click to reveal)</summary>
@@ -44,7 +44,7 @@ This change will only take effect the next time the elasticsearch user opens a n
 <hr>
 
 ### Set vm.max_map_count
-Set the `vm.max_map_count` to the minimum required value
+:question: Set the `vm.max_map_count` to the minimum required value
 
 <details>
   <summary>View Solution (click to reveal)</summary>
@@ -151,7 +151,7 @@ bin  config  data  jdk  lib  LICENSE.txt  logs  modules  mypidfile  NOTICE.txt  
 
 # Configure the nodes of a cluster to satisfy a given set of requirements
 
-Using the previously installed application we will update the two main configuration files.
+:question: Using the previously installed application we will update the two main configuration files.
 
 `elasticsearch.yml` and `jvm.options`
 
@@ -202,7 +202,7 @@ The most important `jvm.options` are the following:
 
 ### Set the JVM heap space
 
-Set the JVM heap space to 2 gig
+:question: Set the JVM heap space to 2 gig
 
 
 <details>
@@ -231,7 +231,7 @@ This would be done on each affected node and then restart elasticsearch on that 
 
 ### Set the cluster and node config
 
-Set the cluster to the following
+:question: Set the cluster to the following
 
 - cluster name: testcluster01
 - node name: node01
@@ -364,7 +364,7 @@ To secure a cluster you need to do a few things:
 
 ## Create a node certificate
 
-Create the CA file and node certificate.
+:question: Create the CA file and node certificate.
 
 <details>
   <summary>View Solution (click to reveal)</summary>
@@ -492,7 +492,7 @@ This file can be your keystore and truststore.
 
 ## Enable SSL on the Transport Network 
 
-The Transport Network is the network between nodes within a cluster (or between clusters).  On a single-node cluster you do not need this.
+:question: The Transport Network is the network between nodes within a cluster (or between clusters).  On a single-node cluster you do not need this.
 On a production cluster you WILL need this.
 
 <details>
@@ -533,7 +533,7 @@ Restart Elasticsearch afterwards.
 
 ## Change the built-in user default passwords
 
-Serveral accounts needs their passwords changed
+:question: Serveral accounts needs their passwords changed
 
 <details>
   <summary>View Solution (click to reveal)</summary>
@@ -561,7 +561,7 @@ Please confirm that you would like to continue [y/N]
 
 ### Enable SSL on the HTTP Network
 
-This is the HTTPS used to access port 9200. eg. when using curl or python.
+:question: This is the HTTPS used to access port 9200. eg. when using curl or python.
 It is advised that default user passwords should be changed before doing this. (see previous section)
 
 https://www.elastic.co/guide/en/elasticsearch/reference/current/security-basic-setup-https.html
@@ -594,7 +594,7 @@ Restart Elasticsearch afterwards.
 
 > See: [Importing Sample data](Importing_sample_data.md)
 
-To do this section you need to:
+:question: To do this section you need to:
 
 - create roles and users
 
@@ -633,7 +633,7 @@ Error message:
 :warning: This assumes you have ingested the Elastic sample data.
 > See: [Importing Sample data](Importing_sample_data.md)
 
-### Create role and user for the following:
+### :question:  Create role and user for the following:
 
 - a role called `flights_all` for read only access on the Flight sample data
 - the role should have cluster monitor access
@@ -706,7 +706,7 @@ GET kibana_sample_data_flights/_count
 
 
 
-### Create a role with field and document level security, plus a user for the following:
+### :question:  Create a role with field and document level security, plus a user for the following:
 
 :warning: can only be applied if you have purchased an elastic licence. This will not work on the Basic/Free licence.
 
