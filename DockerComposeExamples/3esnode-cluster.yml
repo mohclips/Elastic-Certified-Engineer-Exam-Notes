@@ -1,0 +1,206 @@
+version: "2.4"
+# docker compose versions see: https://github.com/docker/compose/issues/4513#issuecomment-368167466
+
+#
+# the underlying host/vm needs this config setting or ES nodes will not boot fully
+#   with a bootstrap failure
+#
+# myhostmachine$ sudo sysctl -w vm.max_map_count=262144
+#
+
+# test all ok with  curl http://localhost:9200/_cluster/health?pretty
+
+# cpu count
+# $ grep processor /proc/cpuinfo | wc -l
+# 8
+
+# this is based on my own home cluster
+
+services:
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
+    container_name: es01
+    restart: always
+    environment:
+      node.name: es01
+      discovery.seed_hosts: es02,es03
+    #load in common ES settings/config
+    env_file:
+      - es-common-vars.env
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    # hardware throttling
+    # cpus: 4.0
+    # mem_limit: 12g
+    # memswap_limit: 12g
+    # volumes:
+    #   - ./data01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - elastic
+    # check health here:   docker inspect --format='{{json .State.Health}}' es01
+    # healthcheck:
+    #   test:
+    #     [
+    #       "CMD-SHELL",
+    #       "curl --silent --fail localhost:9200/_cluster/health || exit 1",
+    #     ]
+    #   interval: 30s
+    #   timeout: 30s
+    #   retries: 3
+    #   start_period: 1m
+
+  es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
+    container_name: es02
+    restart: always
+    environment:
+      - node.name=es02
+      - discovery.seed_hosts=es01,es03
+    #load in common ES settings/config
+    env_file:
+      - es-common-vars.env
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    # hardware throttling
+    # cpus: 4
+    # mem_limit: 12g
+    # memswap_limit: 12g
+    # volumes:
+    #   - ./data02:/usr/share/elasticsearch/data
+    ports:
+      - 9202:9200
+    networks:
+      - elastic
+    # healthcheck:
+    #   test:
+    #     [
+    #       "CMD-SHELL",
+    #       "curl --silent --fail localhost:9200/_cluster/health || exit 1",
+    #     ]
+    #   interval: 30s
+    #   timeout: 30s
+    #   retries: 3
+    #   start_period: 1m
+
+  es03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
+    container_name: es03
+    restart: always
+    environment:
+      - node.name=es03
+      - discovery.seed_hosts=es01,es02
+    #load in common ES settings/config
+    env_file:
+      - es-common-vars.env
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    # hardware throttling
+    # cpus: 4
+    # mem_limit: 12g
+    # memswap_limit: 12g
+    # volumes:
+    #   - ./data03:/usr/share/elasticsearch/data
+    ports:
+      - 9203:9200
+    networks:
+      - elastic
+    # healthcheck:
+    #   test:
+    #     [
+    #       "CMD-SHELL",
+    #       "curl --silent --fail localhost:9200/_cluster/health || exit 1",
+    #     ]
+    #   interval: 30s
+    #   timeout: 30s
+    #   retries: 3
+    #   start_period: 1m
+
+  #
+  # takes around 3mins to come up live
+  #
+  kb01:
+    image: docker.elastic.co/kibana/kibana:7.2.0
+    container_name: kb01
+    restart: always
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://es01:9200
+      ELASTICSEARCH_HOSTS: http://es01:9200
+
+      NEWSFEED_ENABLED: "false"
+      MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED: "true"
+      SERVER_NAME: "kb01"
+      XPACK_REPORTING_KIBANASERVER_HOSTNAME: "0.0.0.0"
+      XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: "123456789012345678901234567890abcdefghi"
+      XPACK_REPORTING_ENCRYPTIONKEY: "123456789012345678901234567890abcdefghi"
+      XPACK_SECURITY_ENCRYPTIONKEY: "123456789012345678901234567890abcdefghi"
+
+      MONITORING_CLUSTER_ALERTS_EMAIL_NOTIFICATIONS_EMAIL_ADDRESS: "root@localhost.local"
+
+      # does not work as we are not using cpu throttling
+      XPACK_MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED: 'true'
+
+      XPACK_SECURITY_AUDIT_ENABLED: 'true'
+    # hardware throttling
+    # cpus: 4
+    # mem_limit: 6g
+    # monitoring.ui.container.logstash.enabled: "true"
+    networks:
+      - elastic
+    # volumes:
+    #   - ./kb01:/data
+    # healthcheck:
+    #   test:
+    #     [
+    #       "CMD-SHELL",
+    #       "curl --silent --fail http://localhost:5601/api/status || exit 1",
+    #     ]
+    #   interval: 30s
+    #   timeout: 30s
+    #   retries: 3
+    #   start_period: 3m
+
+  # ls01:
+  #   image: docker.elastic.co/logstash/logstash:7.2.0
+  #   container_name: ls01
+  #   restart: always
+  #   ports:
+  #     - 5045:5045
+  #     - 5445:5445
+  #     - 9601:9600
+  #   environment:
+  #     ELASTICSEARCH_URL: http://es01:9200
+  #     ELASTICSEARCH_HOSTS: http://es01:9200
+  #     LS_JAVA_OPTS: -Xms4096m -Xmx4096m
+  #   # hardware throttling
+  #   # cpus: 4
+  #   # mem_limit: 6g
+
+  #   networks:
+  #     - elastic
+  #   # volumes:
+  #   #   - ./ls01/data/:/usr/share/logstash/data/
+  #   #   - ./ls01/config/:/usr/share/logstash/config/
+  #   # healthcheck:
+  #   #   test:
+  #   #     [
+  #   #       "CMD-SHELL",
+  #   #       "curl --silent --fail http://localhost:9600/_node/pipelines || exit 1",
+  #   #     ]
+  #   #   interval: 30s
+  #   #   timeout: 30s
+  #   #   retries: 3
+  #     #start_period: 1m
+
+networks:
+  elastic:
+    driver: bridge
