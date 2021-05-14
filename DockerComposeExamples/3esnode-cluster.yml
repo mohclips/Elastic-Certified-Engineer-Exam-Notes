@@ -24,6 +24,7 @@ services:
     environment:
       node.name: es01
       discovery.seed_hosts: es02,es03
+      node.attr.location: north 
     #load in common ES settings/config
     env_file:
       - es-common-vars.env
@@ -60,6 +61,7 @@ services:
     environment:
       - node.name=es02
       - discovery.seed_hosts=es01,es03
+      - node.attr.location=south
     #load in common ES settings/config
     env_file:
       - es-common-vars.env
@@ -95,6 +97,7 @@ services:
     environment:
       - node.name=es03
       - discovery.seed_hosts=es01,es02
+      - node.attr.location=east
     #load in common ES settings/config
     env_file:
       - es-common-vars.env
@@ -136,20 +139,20 @@ services:
       ELASTICSEARCH_URL: http://es01:9200
       ELASTICSEARCH_HOSTS: http://es01:9200
 
-      NEWSFEED_ENABLED: "false"
-      MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED: "true"
-      SERVER_NAME: "kb01"
-      XPACK_REPORTING_KIBANASERVER_HOSTNAME: "0.0.0.0"
-      XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: "123456789012345678901234567890abcdefghi"
-      XPACK_REPORTING_ENCRYPTIONKEY: "123456789012345678901234567890abcdefghi"
-      XPACK_SECURITY_ENCRYPTIONKEY: "123456789012345678901234567890abcdefghi"
+      # NEWSFEED_ENABLED: "false"
+      # MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED: "true"
+      # SERVER_NAME: "kb01"
+      # XPACK_REPORTING_KIBANASERVER_HOSTNAME: "0.0.0.0"
+      # XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: "123456789012345678901234567890abcdefghi"
+      # XPACK_REPORTING_ENCRYPTIONKEY: "123456789012345678901234567890abcdefghi"
+      # XPACK_SECURITY_ENCRYPTIONKEY: "123456789012345678901234567890abcdefghi"
 
-      MONITORING_CLUSTER_ALERTS_EMAIL_NOTIFICATIONS_EMAIL_ADDRESS: "root@localhost.local"
+      # MONITORING_CLUSTER_ALERTS_EMAIL_NOTIFICATIONS_EMAIL_ADDRESS: "root@localhost.local"
 
-      # does not work as we are not using cpu throttling
-      XPACK_MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED: 'true'
+      # # does not work as we are not using cpu throttling
+      # XPACK_MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED: 'true'
 
-      XPACK_SECURITY_AUDIT_ENABLED: 'true'
+      # XPACK_SECURITY_AUDIT_ENABLED: 'true'
     # hardware throttling
     # cpus: 4
     # mem_limit: 6g

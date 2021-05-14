@@ -1,5 +1,8 @@
 # 1 Elasticsearch node, 1 Kibana instance with xpack security enabled (Basic Licence) - (v7.2.0)
 # Based on https://github.com/glenacota/elastic-training-repo/blob/master/clusters-to-go/7.2.0/1es-1kibana.yml
+
+# example settings are here https://github.com/elastic/elasticsearch/blob/master/distribution/docker/docker-compose.yml
+
 version: '3'
 services:
   esnode:
@@ -7,6 +10,7 @@ services:
     container_name: esnode7.2.0
     environment:
       - node.name=esnode
+      - node.attr.location=central
       - cluster.name=elastic-cluster
       - discovery.type=single-node
       - bootstrap.memory_lock=true
@@ -14,6 +18,7 @@ services:
       - xpack.license.self_generated.type=basic
       - xpack.security.enabled=true
       - ELASTIC_PASSWORD=Password01
+      - path.repo=/tmp
     ulimits:
       memlock:
         soft: -1
@@ -24,6 +29,7 @@ services:
       - 9200:9200
     networks:
       - elastic-net
+
   kibana:
     image: docker.elastic.co/kibana/kibana:7.2.0
     container_name: kibana7.2.0
