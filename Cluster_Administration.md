@@ -251,11 +251,16 @@ Thus if a rack, zone or datacenter is down, the cluster will try to allocate the
 
 :question: Enable shard allocation awareness
 
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
 This is done in the `elasticsearch.yml`
 
 ```json
 cluster.routing.allocation.awareness.attributes: <location_attribute>
 ```
+</details>
+<hr>
 
 ## Forced awareness
 
