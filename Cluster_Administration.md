@@ -1,14 +1,10 @@
 # Cluster Administration
 
-The following will need a couple of clusters.
+The following topics will need a few nodes.
 
 Use the following:
 ```bash
-xxxxxxxxxxxxx
-
 sudo sysctl -w vm.max_map_count=262144
-
-
 ```
 
 ## Node filters
@@ -44,8 +40,12 @@ You can use wildcards when specifying attribute values
 
 Or use `custom` attributes.
 
+<hr>
 
 :question: 1. Display the current node attributes
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 If you are using the docker-compose `3esnode-cluster.yml` you will find that the three nodes have a `location` attribute applied to them.
 
@@ -76,8 +76,13 @@ es03 172.18.0.3 172.18.0.3 location        east
 es03 172.18.0.3 172.18.0.3 xpack.installed true
 
 ```
+</details>
+<hr>
 
 :question: 2. Allocate a new index `test_north` only the node that has attribute `location=north`
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 
 ```json
@@ -99,8 +104,9 @@ PUT /test_north
 }
 ```
 
-View allocation
+## View the allocation
 
+Note: that the index can be accessed via a wild card '*'
 
 ```json
 GET _cat/indices/test_*?v
@@ -131,7 +137,13 @@ You can see above that all the internal indices have multiple shards allocated a
 
 `test_north` is only allocated to `es01` node, which is where the attribute `location=north` is set.
 
+</details/>
+<hr>
+
 :question: 3. Allocate a new index `test_southeast` to the cluster but make sure it is not allocated to the node in  `location=north`
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 
 ```json
@@ -153,7 +165,7 @@ PUT /test_southeast
 }
 ```
 
-Now check the shard allocation
+## Now check the shard allocation
 
 ```json 
 GET _cat/shards/test_*?v&s=index
@@ -167,12 +179,18 @@ test_southeast                  0     r      STARTED    0    230b 172.18.0.3 es0
 ```
 So, above you can see there is a primary `p` and replica `r` shards allocated to `es02` and `es03`
 
+</details>
+<hr>
 
 :question: 4.  What happens if we increase the replica shard allocation to above `1` to `2` we have three nodes don't we?
 
 One primary plus two replcias equals three.  Three nodes.
 
 Create a new index called `test_northeast` make sure it cannot be allocated to the `south` location.  Also make sure it has `2` replicas.
+
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 PUT /test_northeast
@@ -215,6 +233,9 @@ The index health is `yellow` !
 
 Follow on to the diagnostics topic,to find out why :)
 
+</details>
+<hr>
+
 # Configure shard allocation awareness and forced awareness for an index
 
 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/allocation-awareness.html
@@ -249,19 +270,27 @@ This works the same as Allocation Awareness, but it will never allocate the miss
 
 :question: Enable shard forced allocation awareness
 
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
 This is done in the `elasticsearch.yml`
 
 ```json
 cluster.routing.allocation.awareness.attributes: <location_attribute>
 cluster.routing.allocation.awareness.force.zone.values: <location_1>,  <location_3>,  <location_3>,...
 ```
+</details>
+<hr>
 
 # Diagnose shard issues and repair a cluster's health
 
-In the above question `4` the index `test_northeast` is showing it's health as yellow, which means it has a fault.
+In the above question `4` the index `test_northeast` is showing it's health as `yellow`, which means it has a fault.
+
 
 :question: Diagnose the fault in index `test_northeast`
 
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/cat-shards.html
 
@@ -431,6 +460,8 @@ health status index          uuid                   pri rep docs.count docs.dele
 green  open   test_northeast 4vpwoBaARVuRQ8Jfl-wXaw   1   1          0            0       566b           283b
 ```
 
+</details>
+<hr>
 
 # Backup and restore a cluster and/or specific indices
 
@@ -474,7 +505,10 @@ https://www.elastic.co/guide/en/elasticsearch/reference/7.2/backup-cluster.html
 
 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/modules-snapshots.html
 
-1. Backup the `shakespeare` index to a snapshot called `shakespeare_snapshot_<current_date>`
+1. :question: Backup the `shakespeare` index to a snapshot called `shakespeare_snapshot_<current_date>`
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/modules-snapshots.html#_snapshot
 
@@ -579,10 +613,13 @@ GET /_snapshot/my_test_backup/_all
 }
 ```
 
+</details>
+<hr>
 
+2. :question: Restore the `shakespeare_snapshot_<current_date>` index snapshot to the name `restored_index_shakespeare`
 
-2. Restore the `shakespeare_snapshot_<current_date>` index snapshot to the name `restored_index_shakespeare`
-
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 POST /_snapshot/my_test_backup/shakespeare-snapshot-2021.05.13/_restore
@@ -615,8 +652,10 @@ yellow open   restored_index_shakespeare gKIdyU4jSnqmuBLRqPpZLw   1   1     1113
 
 :warning: Health is yellow due to the number of replicas is above 0 for a single node deployment.
 
+</details>
+<hr>
 
-3. Backup/Restore the cluster configuration
+3. :closed_book: Backup/Restore the cluster configuration
 
 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/backup-cluster-configuration.html
 
@@ -634,7 +673,7 @@ GET _cluster/settings?pretty&flat_settings&filter_path=persistent
 
 So, it's a probably good idea to backup your `/etc/elasticsearch/` folder and run an external API call to download the persistant settings to a text file.
 
-4. Backup/Restore the Security configuration
+4. :closed_book: Backup/Restore the Security configuration
 
 https://www.elastic.co/guide/en/elasticsearch/reference/7.2/security-backup.html
 
@@ -666,7 +705,7 @@ snapshot the `.security` index alias.
 
 ## Restore the Security index
 
-https://www.elastic.co/guide/en/elasticsearch/reference/7.2/restore-security-configuration.html
+See https://www.elastic.co/guide/en/elasticsearch/reference/7.2/restore-security-configuration.html
 
 
 # Configure a cluster for use with a hot/warm architecture
