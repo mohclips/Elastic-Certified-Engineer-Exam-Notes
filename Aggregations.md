@@ -179,7 +179,7 @@ GET kibana_sample_data_ecommerce/_search?filter_path=aggregations
 
 Create the `date_histogram`
 ```json 
-
+todo?
 ```
 
 Aggregate by the `category` grouping - here you are testing your aggregation.
