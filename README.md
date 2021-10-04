@@ -73,6 +73,7 @@ Each topic below will have example questions and solutions. Click on the Link to
 - Write and execute aggregations that contain sub-aggregations
 
 ## Developing Search Applications (previously part of Queries)
+:point_right: [Link](Queries.md)
 
 - Highlight the search terms in the response of a query
 - Sort the results of a query by a given set of requirements
