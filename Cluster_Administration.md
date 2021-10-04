@@ -784,3 +784,7 @@ GET /twitter,cluster_one:twitter,cluster_two:twitter/_search
 }
 ```
 Here we search the local cluster and two remote clusters.
+
+
+# Configure a snapshot to be searchable
+

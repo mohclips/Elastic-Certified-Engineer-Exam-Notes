@@ -1,6 +1,35 @@
 # Indexing Data
 
-This section of the Docs https://www.elastic.co/guide/en/elasticsearch/reference/7.2/docs.html
+# Use the Data Visualizer to upload a text file into Elasticsearch
+
+This is a bit of point and click.
+
+https://www.elastic.co/blog/importing-csv-and-log-data-into-elasticsearch-with-file-data-visualizer
+
+You have to make sure that Machine Learning is switch on (default) or this functionality will be missing.
+
+In elasticsearch.yml: `xpack.ml.enabled=true`
+
+
+
+1. Download all USGS magnitude 2.5+ earthquakes from the past month as a CSV.
+
+    https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_month.csv
+
+2. Import into an index called `usgs`
+
+3. Visualise the data
+
+    3.1 Kibana > Analytics > Maps
+
+    3.2 Add Layer > Documents > Index > `usgs`
+
+    3.3 Calendar Icon > Commonly Used > Last 1 Year
+
+You should now see lots of dots where the earth quakes have happend.
+
+
+
 
 # Define an index that satisfies a given set of requirements
 
@@ -1306,3 +1335,322 @@ GET accounts-2021/_doc/25?filter_path=*.balance,*.full_name,*.tags
 
 </details>
 <hr>
+
+# Define an Index Lifecycle Management policy for a time-series index
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started-index-lifecycle-management.html
+
+
+1 .define an ILM policy to the following requirements
+- ILM policy name `timeseries_policy`
+
+Rollover at:
+- Max size of 50GB
+- 30 days
+
+Delete at:
+- 90 days
+
+
+
+```json
+PUT _ilm/policy/timeseries_policy
+{
+  "policy": {
+    "phases": {
+      "hot": {                                
+        "actions": {
+          "rollover": {
+            "max_primary_shard_size": "50GB", 
+            "max_age": "30d"
+          }
+        }
+      },
+      "delete": {
+        "min_age": "90d",                     
+        "actions": {
+          "delete": {}                        
+        }
+      }
+    }
+  }
+}
+```
+
+## index creation
+
+2. Create a index template with the following requirements
+
+- index pattern `timeseries-*`
+- ILM policy `timeseries_policy`
+- 1x shard, 0x replicas
+
+```json
+PUT _index_template/timeseries_template
+{
+  "index_patterns": ["timeseries-*"],                 
+  "template": {
+    "settings": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0,
+      "index.lifecycle.name": "timeseries_policy",      
+      "index.lifecycle.rollover_alias": "timeseries"    
+    }
+  }
+}
+```
+
+### Bootstrap index
+```json
+PUT timeseries-000001
+{
+  "aliases": {
+    "timeseries": {
+      "is_write_index": true
+    }
+  }
+}
+```
+
+### Add a document
+write a document to the alias
+
+```json
+POST timeseries/_doc
+{
+  "message": "logged the request",
+  "@timestamp": "1591890611"
+}
+```
+
+## Force a rollover
+
+```json
+POST timeseries/_rollover
+```
+
+## Check index alias write status
+
+
+```json
+GET _alias/timeseries
+
+// output
+
+{
+  "timeseries-000002" : {
+    "aliases" : {
+      "timeseries" : {
+        "is_write_index" : true
+      }
+    }
+  },
+  "timeseries-000001" : {
+    "aliases" : {
+      "timeseries" : {
+        "is_write_index" : false
+      }
+    }
+  }
+}
+
+```
+
+### View document count
+
+```json
+GET _cat/indices/time*?v
+
+// output
+
+health status index             uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+green  open   timeseries-000002 bmzwZVAfToqwdbB58JBgQg   1   0          0            0       208b           208b
+green  open   timeseries-000001 0Lt9rjDxTAOi2DigXL7cXw   1   0          1            0      4.6kb          4.6kb
+
+```
+
+
+
+# Define an index template that creates a new data stream
+
+## What is a datastream
+https://www.elastic.co/guide/en/elasticsearch/reference/current/data-streams.html
+
+> A data stream lets you store append-only time series data across multiple indices while giving you a single named resource for requests. _Data streams are well-suited for logs, events, metrics, and other continuously generated data._
+
+:warning: That doesn't need updating - like alarms that open/close or support tickets, etc.  Use an index and alias for that.
+
+> ### Datastream Write index
+>
+> The most recently created backing index is the data stream’s write index. The stream adds new documents to this index _only_.
+>
+> You cannot add new documents to other backing indices, even by sending requests directly to the index.
+>
+> You also cannot perform operations on a write index that may hinder indexing, such as:
+>
+> * Clone
+> * Delete
+> * Freeze
+> * Shrink
+> * Split
+
+> ### There are Append-only
+> Data streams are designed for use cases where existing data is rarely, if ever, updated. You cannot send update or deletion requests for existing documents directly to a data stream. Instead, use the update by query and delete by query APIs.
+> 
+> If needed, you can update or delete documents by submitting requests directly to the document’s backing index.
+> 
+> If you frequently update or delete existing documents, use an index alias and index template instead of a data stream. You can still use ILM to manage indices for the alias.
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/set-up-a-data-stream.html
+
+> To set up a data stream, follow these steps:
+> 
+> Step 1. Create an index lifecycle policy
+> 
+> Step 2. Create component templates
+> 
+> Step 3. Create an index template
+> 
+> Step 4. Create the data stream
+> 
+> Step 5. Secure the data stream
+
+
+## 1. Create a ILM policy
+
+```json
+PUT _ilm/policy/ds_policy
+{
+  "policy": {
+    "phases": {
+      "hot": {                                
+        "actions": {
+          "rollover": {
+            "max_primary_shard_size": "50GB", 
+            "max_age": "30d"
+          }
+        }
+      },
+      "delete": {
+        "min_age": "90d",                     
+        "actions": {
+          "delete": {}                        
+        }
+      }
+    }
+  }
+}
+```
+
+## 2. Create the component templates
+
+Use a wild card to later extract other data from the message field.
+### Mappings
+```json
+# Creates a component template for mappings
+PUT _component_template/my-mappings
+{
+  "template": {
+    "mappings": {
+      "properties": {
+        "@timestamp": {
+          "type": "date",
+          "format": "date_optional_time||epoch_millis"
+        },
+        "message": {
+          "type": "wildcard"
+        }
+      }
+    }
+  },
+  "_meta": {
+    "description": "Mappings for @timestamp and message fields",
+    "my-custom-meta-field": "More arbitrary metadata"
+  }
+}
+```
+
+### The component template
+```json
+# Creates a component template for index settings
+PUT _component_template/my-settings
+{
+  "template": {
+    "settings": {
+      "index.lifecycle.name": "ds-policy"
+    }
+  },
+  "_meta": {
+    "description": "Settings for ILM",
+    "my-custom-meta-field": "More arbitrary metadata"
+  }
+}
+```
+
+## 3. Create the combined index template based on the components
+
+```json
+PUT _index_template/my-component-index-template
+{
+  "index_patterns": ["my-data-stream*"],
+  "data_stream": { },
+  "composed_of": [ 
+    "my-mappings", 
+    "my-settings" 
+  ],
+  "priority": 500,
+  "_meta": {
+    "description": "Template for my time series data",
+    "my-custom-meta-field": "More arbitrary metadata"
+  }
+}
+```
+
+## 4. Create the data stream
+By adding a document to it
+
+```json
+POST my-data-stream/_doc
+{
+  "@timestamp": "2099-05-06T16:21:15.000Z",
+  "message": "192.0.2.42 - - [06/May/2099:16:21:15 +0000] \"GET /images/bg.jpg HTTP/1.0\" 200 24736"
+}
+
+// output
+
+{
+  "_index" : ".ds-my-data-stream-2021.06.27-000001",
+  "_type" : "_doc",
+  "_id" : "fMjrTnoBw1F50El3ljBq",
+  "_version" : 1,
+  "result" : "created",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 0,
+  "_primary_term" : 1
+}
+```
+
+### View doc count
+
+```json
+GET _cat/indices/.ds-my-data-stream-2021.06.27-000001?v
+
+// output
+
+health status index                                uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+yellow open   .ds-my-data-stream-2021.06.27-000001 none_iX6QbasrQSlT7eTZg   1   1          1            0        4kb            4kb
+```
+
+
+
+
+
+## 5. Secure a datastream
+
+Usual privileges apply.
+
+Aliases, filtered aliases and all the user privileges can be used (eg. from Kibana admin)

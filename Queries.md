@@ -625,3 +625,78 @@ GET local_index,remote_cluster1:that_remote_index,remote_cluster2:that_other_rem
 ```
 </details>
 <hr>
+
+# Write an asynchronous search
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/async-search.html
+
+> The async search API let you asynchronously execute a search request, monitor its progress, and retrieve partial results as they become available.
+
+## POST - Submit async search APIedit
+> Executes a search request asynchronously. It accepts the same parameters and request body as the search API.
+>
+>Returns an `id`.
+
+:warning: These are easy to write but hard to do in the lab as you need so much data to do a slow query, to get the `POST` to return an `id`.
+
+It is better to be aware of the concepts and be able to look this up in the online manuals in the exam.
+
+```json
+POST /kibana_sample_data_logs/_async_search?size=0
+{
+  "sort": [
+    { "@timestamp": { "order": "asc" } }
+  ],
+  "aggs": {
+    "sale_date": {
+      "date_histogram": {
+        "field": "@timestamp",
+        "calendar_interval": "1d"
+      }
+    }
+  }
+}
+
+// output 
+
+{
+  "id" : "FmRldE8zREVEUzA2ZVpUeGs2ejJFUFEaMkZ5QTVrSTZSaVN3WlNFVmtlWHJsdzoxMDc=", 
+  "is_partial" : true, 
+  "is_running" : true, 
+  "start_time_in_millis" : 1583945890986,
+  "expiration_time_in_millis" : 1584377890986,
+  "response" : {
+    "took" : 1122,
+    "timed_out" : false,
+...
+```
+
+
+## GET async searchedit
+> The get async search API retrieves the results of a previously submitted async search request given its `id`. 
+>
+> If the Elasticsearch security features are enabled, the access to the results of a specific async search is restricted to the user or API key that submitted it.
+
+
+```json
+GET /_async_search/FmRldE8zREVEUzA2ZVpUeGs2ejJFUFEaMkZ5QTVrSTZSaVN3WlNFVmtlWHJsdzoxMDc=
+```
+
+## GET async search statusedit
+> The get async search status API, without retrieving search results, shows only the status of a previously submitted async search request given its `id`. 
+> 
+> If the Elasticsearch security features are enabled, the access to the get async search status API is restricted to the monitoring_user role.
+
+
+```json
+GET /_async_search/status/FmRldE8zREVEUzA2ZVpUeGs2ejJFUFEaMkZ5QTVrSTZSaVN3WlNFVmtlWHJsdzoxMDc=
+```
+
+## DELETE async searchedit
+> You can use the delete async search API to manually delete an async search by `id`. 
+>
+> If the search is still running, the search request will be cancelled. Otherwise, the saved search results are deleted.
+
+```json
+DELETE /_async_search/FmRldE8zREVEUzA2ZVpUeGs2ejJFUFEaMkZ5QTVrSTZSaVN3WlNFVmtlWHJsdzoxMDc=
+```
