@@ -23,6 +23,8 @@ https://www.elastic.co/training/certification/faq
 :warning: Pay particular attention to the version of ElasticSearch used in the exam.
 (this changes 1st July 2021)
 
+:star: What is in the exam? https://www.elastic.co/training/elastic-certified-engineer-exam
+
 
 # Using the elastic.co docs
 
@@ -34,12 +36,12 @@ Use the Search icon at the right hand top of the site (highlighted in Yellow)
 # Topics (post-July 2021)
 :question: Based on https://www.elastic.co/training/elastic-certified-engineer-exam
 
-I have added the previous (pre-July 2021) exam topics in the headers and marked the new topics.  As you can see most have been renamed or shuffled around.  There are only a fully few new items.
+I have added the previous (pre-July 2021) exam topics in the headers and marked the new topics.  As you can see most have been renamed or shuffled around.  There are only a few new items and knowing how to build an ELK stack is now removed!?
 
 Each topic below will have example questions and solutions. Click on the Link to follow to that topic.
 
-## Installation and Configuration
-:point_right: [Link](Installation_and_Configuration.md)
+## Installation and Configuration (REMOVED)
+:point_right: [Link](Installation_and_Configuration.md)  
 
 - Deploy and start an Elasticsearch cluster that satisfies a given set of requirements
 - Configure the nodes of a cluster to satisfy a given set of requirements
