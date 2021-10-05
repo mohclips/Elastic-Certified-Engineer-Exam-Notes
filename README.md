@@ -42,6 +42,7 @@ Each topic below will have example questions and solutions. Click on the Link to
 
 ## Data Management (previously Indexing Data)
 :point_right: [Link (pre July 2021)](Indexing_Data.md)
+
 :point_right: [Link (post July 2021)](Data_Management.md)
 
 - Define an index that satisfies a given set of requirements
@@ -51,23 +52,23 @@ Each topic below will have example questions and solutions. Click on the Link to
 - :new: Define an Index Lifecycle Management policy for a time-series index
 - :new: Define an index template that creates a new data stream
 
-## Searching Data (Previously Queries)
-:point_right: [Link (pre July 2021)](Queries.md)
+## Searching Data (Previously Queries/Aggregations)
+:point_right: [Link (pre July 2021)](Queries.md) :point_right: [Link (pre july 2021)](Aggregations.md)
+
 :point_right: [Link (post July 2021)](Searching_Data.md)
 
 - Write and execute a search query for terms and/or phrases in one or more fields of an index
 - Write and execute a search query that is a Boolean combination of multiple queries and filters
 - :new: Write an asynchronous search
-- Write and execute a query that searches across multiple clusters
-
-## Part of Searching Data (previously Aggregations)
-:point_right: [Link](Aggregations.md)
-
 - Write and execute metric and bucket aggregations
 - Write and execute aggregations that contain sub-aggregations
+- Write and execute a query that searches across multiple clusters
 
-## Developing Search Applications (previously part of Queries)
-:point_right: [Link](Queries.md)
+## Developing Search Applications (previously part of Queries/Indexing Data)
+:point_right: [Link (pre July 2021)](Queries.md)
+:point_right: [Link (pre July 2021)](Indexing_Data.md)
+
+:point_right: [Link (post July 2021)](Developing_Search_Applications.md)
 
 - Highlight the search terms in the response of a query
 - Sort the results of a query by a given set of requirements
