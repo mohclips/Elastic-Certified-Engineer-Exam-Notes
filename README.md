@@ -40,14 +40,6 @@ I have added the previous (pre-July 2021) exam topics in the headers and marked 
 
 Each topic below will have example questions and solutions. Click on the Link to follow to that topic.
 
-## Installation and Configuration (REMOVED)
-:point_right: [Link](Installation_and_Configuration.md)  
-
-- Deploy and start an Elasticsearch cluster that satisfies a given set of requirements
-- Configure the nodes of a cluster to satisfy a given set of requirements
-- Secure a cluster using Elasticsearch Security
-- Define role-based access control using Elasticsearch Security
-
 ## Data Management (previously Indexing Data)
 :point_right: [Link](Indexing_Data.md)
 
