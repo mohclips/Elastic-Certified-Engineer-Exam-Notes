@@ -41,7 +41,8 @@ I have added the previous (pre-July 2021) exam topics in the headers and marked 
 Each topic below will have example questions and solutions. Click on the Link to follow to that topic.
 
 ## Data Management (previously Indexing Data)
-:point_right: [Link](Indexing_Data.md)
+:point_right: [Link (pre July 2021)](Indexing_Data.md)
+:point_right: [Link (post July 2021)](Data_Management.md)
 
 - Define an index that satisfies a given set of requirements
 - :new: Use the Data Visualizer to upload a text file into Elasticsearch
