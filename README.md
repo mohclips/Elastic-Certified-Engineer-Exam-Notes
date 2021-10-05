@@ -52,7 +52,8 @@ Each topic below will have example questions and solutions. Click on the Link to
 - :new: Define an index template that creates a new data stream
 
 ## Searching Data (Previously Queries)
-:point_right: [Link](Queries.md)
+:point_right: [Link (pre July 2021)](Queries.md)
+:point_right: [Link (post July 2021)](Searching_Data.md)
 
 - Write and execute a search query for terms and/or phrases in one or more fields of an index
 - Write and execute a search query that is a Boolean combination of multiple queries and filters
