@@ -528,8 +528,17 @@ keep requerying this and see that they are.
 GET test-index/_ilm/explain?filter_path=*.*.age,*.*.phase
 ```
 
-## Results
+### Results
+
+So, importantly what you can see here is that the index is rolled over at 5-ish minutes.
+
+Then, each move to a new phase is from that initial rollover (at 5-ish minutes)
+
+You can also see that no time is exact.  So days/hours are a better time frame than minutes in production. (at least ths is what i saw).
+
 ```json
+// output 
+
 {
   "indices" : {
     "test-index-000003" : {
@@ -552,8 +561,8 @@ GET test-index/_ilm/explain?filter_path=*.*.age,*.*.phase
 }
 ```
 
-
-1 .define an ILM policy to the following requirements
+# Another example for timeseries data
+## 1 .define an ILM policy to the following requirements
 - ILM policy name `timeseries_policy`
 
 Rollover at:
@@ -690,7 +699,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/data-streams.htm
 
 > A data stream lets you store append-only time series data across multiple indices while giving you a single named resource for requests. _Data streams are well-suited for logs, events, metrics, and other continuously generated data._
 
-:warning: __Use for data that doesn't need updating__ - like alarms that open/close or support tickets, etc.  Use an index and alias for that.
+:warning: __Use for data that doesn't need updating__ - So __not__ for alarms that open/close or support tickets, etc.  Use an index and alias for that.
 
 > ### Datastream Write index
 >
