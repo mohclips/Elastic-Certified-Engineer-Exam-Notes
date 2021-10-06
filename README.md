@@ -91,9 +91,10 @@ Each topic below will have example questions and solutions. Click on the Link to
 - Configure an index so that it properly maintains the relationships of nested arrays of objects
 
 ## Cluster Management
-:point_right: [Link](Cluster_Administration.md)
+:point_right: [Link (pre July 2021)](Cluster_Administration.md)
 
-- Allocate the shards of an index to specific nodes based on a given set of requirements
+:point_right: [Link (post July 2021)](Cluster_Management.md)
+
 - Diagnose shard issues and repair a cluster's health
 - Backup and restore a cluster and/or specific indices
 - :new: Configure a snapshot to be searchable
