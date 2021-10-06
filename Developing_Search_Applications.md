@@ -2,7 +2,7 @@
 
 # Highlight the search terms in the response of a query
 
-https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-request-highlighting.html
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/search-request-highlighting.html
 
 :question: In the spoken lines of the play, highlight the word `Hamlet` starting the highlight with `"#aaa#` and ending it with `#bbb#`
 
@@ -32,7 +32,7 @@ GET shakespeare/_search
 
 # Sort the results of a query by a given set of requirements
 
-https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-request-sort.html
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/search-request-sort.html
 
 :question: Return all of `Othellos` lines in reverse order.
 
@@ -61,7 +61,7 @@ GET shakespeare/_search
 
 # Implement pagination of the results of a search query
 
-https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-request-from-size.html
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/search-request-from-size.html
 
 :question: Paginate the `Othello` play, `20` speech lines per page, stating from line `40`.
 
@@ -145,7 +145,7 @@ GET accounts-all/_count
 <details>
   <summary>View Solution (click to reveal)</summary>
 
-https://www.elastic.co/guide/en/elasticsearch/reference/7.2/indices-aliases.html
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/indices-aliases.html
 
 1. check that the feild you want to filter is a keyword
 
@@ -246,7 +246,7 @@ POST accounts-raw/_search?filter_path=hits.total.value
 
 # Define and use a search template
 
-https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-template.html
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/search-template.html
 
 :question: Create and use a search template that returns the lines of a person in a play.
 
@@ -282,6 +282,10 @@ POST _scripts/get_lines
 }
 ```
 
+## pull the template back
+
+:warning: Note that it is not formatted nicely 😤
+
 ```json
 GET _scripts/get_lines
 
@@ -300,10 +304,12 @@ GET _scripts/get_lines
 }
 ```
 
-Test
+## Test
+
+I suppose you could see this as like a `SQL user-defined function` to be called externally with far less code available to the end-user.  No per-search-template (sql-function-like) security though.  Only read access to the underlying index is required. 🙄
 
 ```json
-GET _search/template?filter_path=*.*.*.text_entry
+GET shakespeare/_search/template?filter_path=hits.hits.*.text_entry
 {
     "id": "get_lines", 
     "params": {
