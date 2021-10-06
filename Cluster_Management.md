@@ -212,7 +212,7 @@ green  open   broken_index xHfY0EcGRq-RRZv_cQONCw   2   0          1            
 
 # Backup and restore a cluster and/or specific indices
 
-https://www.elastic.co/guide/en/elasticsearch/reference/7.2/backup-cluster.html
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/backup-cluster.html
 
 > You cannot back up an Elasticsearch cluster by simply taking a copy of the data directories of all of its nodes. 
 > 
@@ -250,22 +250,25 @@ https://www.elastic.co/guide/en/elasticsearch/reference/7.2/backup-cluster.html
 
 :question: Backup and restore an index using `snapshots`
 
-https://www.elastic.co/guide/en/elasticsearch/reference/7.2/modules-snapshots.html
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/modules-snapshots.html
 
 1. :question: Backup the `shakespeare` index to a snapshot called `shakespeare_snapshot_<current_date>`
 
 <details>
   <summary>View Solution (click to reveal)</summary>
 
-https://www.elastic.co/guide/en/elasticsearch/reference/7.2/modules-snapshots.html#_snapshot
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/snapshot-restore.html
 
 You will need to make sure that the `path.repo` setting has been applied to each ElasticSearch node before doing this.
 
-https://www.elastic.co/guide/en/elasticsearch/reference/7.2/modules-snapshots.html#_shared_file_system_repository
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/snapshots-register-repository.html
 
 The docker images in this Git Repository have this set in the `1es-1kb-xpackSec.yml` single node cluster.  Which was used predominately through out the other sections.
 
 Normally you would save the snapshots to share storage like NFS, AWS S3 etc.   In this demo we use the local filesystem `/tmp` this is not recommended in production.
+
+
+This can all be done in the kibana GUI https://www.elastic.co/guide/en/kibana/7.13/snapshot-repositories.html
 
 ## Check that path.repo is set
 
@@ -312,6 +315,11 @@ Notice that `/tmp` needed to be available and that you can then append a path to
 
 ## Make a snapshot, to that registered location
 
+Date math requires the snapshot name to be enclosed in angled brackets '<>' that is: '%3C' '%3E'
+
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/date-math-index-names.html#date-math-index-names
+> You must enclose date math names in angle brackets. If you use the name in a request path, `special characters must be URI encoded.`
+
 ```json
 PUT /_snapshot/my_test_backup/%3Cshakespeare-snapshot-%7Bnow%2Fd%7D%3E
 {
@@ -320,8 +328,6 @@ PUT /_snapshot/my_test_backup/%3Cshakespeare-snapshot-%7Bnow%2Fd%7D%3E
   "include_global_state": false
 }
 ```
-Date math requires the snapshot name to be enclosed in angled brackets '<>'  '%3C' '%3E'
-
 
 ## Check the snapshot 
 
@@ -329,6 +335,10 @@ List all snapshots
 
 ```json
 GET /_snapshot/my_test_backup/_all
+
+// or
+
+GET /_snapshot/my_test_backup/*
 
 // output 
 
@@ -404,7 +414,7 @@ yellow open   restored_index_shakespeare gKIdyU4jSnqmuBLRqPpZLw   1   1     1113
 
 3. :closed_book: Backup/Restore the cluster configuration
 
-https://www.elastic.co/guide/en/elasticsearch/reference/7.2/backup-cluster-configuration.html
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/backup-cluster-configuration.html
 
 > We recommend that you take regular (ideally, daily) backups of your Elasticsearch config ($ES_PATH_CONF) directory using the file backup software of your choice.
 
@@ -422,7 +432,7 @@ So, it's a probably good idea to backup your `/etc/elasticsearch/` folder and ru
 
 4. :closed_book: Backup/Restore the Security configuration
 
-https://www.elastic.co/guide/en/elasticsearch/reference/7.2/security-backup.html
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/security-backup.html
 
 ## Back up file-based security configuration
 > Elasticsearch security features are configured using the xpack.security namespace inside the elasticsearch.yml and elasticsearch.keystore files. In addition there are several other extra configuration files inside the same ES_PATH_CONF directory. These files define roles and role mappings and configure the file realm. 
@@ -452,7 +462,7 @@ snapshot the `.security` index alias.
 
 ## Restore the Security index
 
-See https://www.elastic.co/guide/en/elasticsearch/reference/7.2/restore-security-configuration.html
+See https://www.elastic.co/guide/en/elasticsearch/reference/7.13/restore-security-configuration.html
 
 
 
@@ -460,9 +470,20 @@ See https://www.elastic.co/guide/en/elasticsearch/reference/7.2/restore-security
 
 # Configure a snapshot to be searchable
 
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/searchable-snapshots.html
+
+> Searchable snapshots let you use snapshots to search infrequently accessed and read-only data in a very cost-effective fashion. The cold and frozen data tiers use searchable snapshots to reduce your storage and operating costs.
+> 
+> Searchable snapshots eliminate the need for replica shards, potentially halving the local storage needed to search your data. Searchable snapshots rely on the same snapshot mechanism you already use for backups and have minimal impact on your snapshot repository storage costs.
+
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/ilm-searchable-snapshot.html
+
+#TODO:
+
+
 # Configure a cluster for cross cluster search
 
-https://www.elastic.co/guide/en/elasticsearch/reference/7.2/modules-cross-cluster-search.html
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/modules-cross-cluster-search.html
 
 ## Update the cluster settings with the seed node of each remote cluster
 
@@ -524,10 +545,25 @@ GET /twitter,cluster_one:twitter,cluster_two:twitter/_search
 ```
 Here we search the local cluster and two remote clusters.
 
-
-
-
 # Implement cross-cluster replication
+
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/xpack-ccr.html
+
+> With cross-cluster replication, you can replicate indices across clusters to:
+>
+> - Continue handling search requests in the event of a datacenter outage
+> - Prevent search volume from impacting indexing throughput
+> - Reduce search latency by processing search requests in geo-proximity to the user
+>
+> Cross-cluster replication uses an active-passive model. You index to a leader index, and the data is replicated to one or more read-only follower indices. Before you can add a follower index to a cluster, you must configure the remote cluster that contains the leader index.
+
+This is a heavily involved process - follow this link
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/ccr-getting-started.html
+
+#TODO:  build two clusters, add sample data and replicate between them
+!! needs new docker compose
+
+
 
 # Define role-based access control using Elasticsearch Security
 
@@ -587,9 +623,9 @@ Error message:
   <summary>View Solution (click to reveal)</summary>
 
 
-https://www.elastic.co/guide/en/elasticsearch/reference/7.2/built-in-roles.html
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/built-in-roles.html
 
-https://www.elastic.co/guide/en/elasticsearch/reference/7.2/security-privileges.html
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/security-privileges.html
 
 ```json
 PUT _security/role/flights_all
