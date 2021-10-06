@@ -9,7 +9,7 @@
 
 :arrow_down: https://download.elastic.co/demos/kibana/gettingstarted/shakespeare_6.0.json
 
-(this is also contained in the data fodler of this repo)
+(this is also contained in the data folder of this repo)
 
 ```json
 PUT /shakespeare
@@ -39,6 +39,14 @@ $ curl -u "elastic:Password01" -s -H "Content-Type: application/x-ndjson" -XPUT 
 <details>
   <summary>View Solution (click to reveal)</summary>
 
+:bulb: `text_entry` is the field we are querying.  `match` is the type of query.
+
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/query-dsl-match-query.html
+
+> Returns documents that match a provided text, number, date or boolean value. The provided text is analyzed before matching.
+>
+> The match query is the standard query for performing a full-text search, including options for fuzzy matching.
+
 ```json
 GET shakespeare/_search
 {
@@ -61,6 +69,15 @@ GET shakespeare/_search
 
 <details>
   <summary>View Solution (click to reveal)</summary>
+
+> **operator**
+> (Optional, string) Boolean logic used to interpret text in the query value. Valid values are:
+>
+> **OR** (Default)
+> For example, a query value of capital of Hungary is interpreted as capital OR of OR Hungary.
+> **AND**
+> For example, a query value of capital of Hungary is interpreted as capital AND of AND Hungary.
+
 
 ```json
 GET shakespeare/_search
@@ -86,6 +103,12 @@ GET shakespeare/_search
 <details>
   <summary>View Solution (click to reveal)</summary>
 
+> Like the match query but used for matching exact phrases or word proximity matches.
+
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/query-dsl-match-query-phrase.html
+
+> The match_phrase query analyzes the text and creates a phrase query out of the analyzed text.
+
 ```json
 GET shakespeare/_search
 {
@@ -109,6 +132,12 @@ GET shakespeare/_search
 <details>
   <summary>View Solution (click to reveal)</summary>
 
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/query-dsl-multi-match-query.html
+
+> The multi-field version of the match query.
+
+> The multi_match query builds on the match query to allow multi-field queries
+
 ```json
 GET shakespeare/_search
 {
@@ -129,7 +158,7 @@ GET shakespeare/_search
 
 ## Term Level / Phrase queries
 
-> You can use term-level queries to find documents based on precise values in structured data. Examples of structured data include date ranges, IP addresses, prices, or product IDs.
+> You can use term-level queries to find documents `based on precise values` in structured data. Examples of structured data include date ranges, IP addresses, prices, or product IDs.
 
 https://www.elastic.co/guide/en/elasticsearch/reference/7.13/term-level-queries.html
 
@@ -147,6 +176,10 @@ https://www.elastic.co/guide/en/elasticsearch/reference/7.13/query-dsl-match-que
 
 <details>
   <summary>View Solution (click to reveal)</summary>
+
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/query-dsl-terms-query.html
+
+> Returns documents that contain one or more `exact` terms in a provided field.
 
 ```json
 GET shakespeare/_search
@@ -194,6 +227,8 @@ GET shakespeare/_search
 <details>
   <summary>View Solution (click to reveal)</summary>
 
+> The `terms` query is the same as the `term` query, except you can search for multiple values.
+
 ```json
 GET shakespeare/_search
 {
@@ -205,7 +240,7 @@ GET shakespeare/_search
 }
 ```
 
-> Note: the terms have to match exactly, so have to be in uppercase here.
+> Note: the terms have to match exactly, so have to be in uppercase here as in the index field data.
 
 > Answer: 2003
 
@@ -216,6 +251,10 @@ GET shakespeare/_search
 
 <details>
   <summary>View Solution (click to reveal)</summary>
+
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/query-dsl-wildcard-query.html
+
+> Returns documents that contain terms matching a wildcard pattern.
 
 ```json
 GET shakespeare/_search
@@ -238,6 +277,10 @@ GET shakespeare/_search
 <details>
   <summary>View Solution (click to reveal)</summary>
 
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/query-dsl-regexp-query.html
+
+> Returns documents that contain terms matching a regular expression.
+
 ```json
 GET shakespeare/_search
 {
@@ -257,10 +300,14 @@ GET shakespeare/_search
 </details>
 <hr>
 
-:question: How many speechs number in range between `400` and `402` ?
+:question: How many speechs range in number between `400` and `402` ?
 
 <details>
   <summary>View Solution (click to reveal)</summary>
+
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/query-dsl-range-query.html
+
+> Returns documents that contain terms within a provided range.
 
 ```json
 GET shakespeare/_search
