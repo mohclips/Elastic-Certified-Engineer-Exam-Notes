@@ -77,7 +77,9 @@ Each topic below will have example questions and solutions. Click on the Link to
 - Define and use a search template
 
 ## Data Processing (previously Mappings and Text Analysis)
-:point_right: [Link](Mappings_and_Text_Analysis.md)
+:point_right: [Link (pre July 2021)](Mappings_and_Text_Analysis.md)
+
+:point_right: [Link (post July 2021)](Data_Processing.md)
 
 - Define a mapping that satisfies a given set of requirements
 - Define and use a custom analyzer that satisfies a given set of requirements
