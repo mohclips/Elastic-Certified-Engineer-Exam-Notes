@@ -300,7 +300,7 @@ GET shakespeare/_search
 </details>
 <hr>
 
-:question: How many speechs range in number between `400` and `402` ?
+:question: How many speeches range in number between `400` and `402` ?
 
 <details>
   <summary>View Solution (click to reveal)</summary>
@@ -343,7 +343,8 @@ https://www.elastic.co/guide/en/elasticsearch/reference/7.13/query-dsl-bool-quer
 |----|----|
 | must|The clause (query) must appear in matching documents and will contribute to the score.|
 |filter|The clause (query) must appear in matching documents. However unlike must the score of the query will be ignored. Filter clauses are executed in filter context, meaning that scoring is ignored and clauses are considered for caching.|
-|should|The clause (query) should appear in the matching document.|
+|should|The clause (query) should appear in the matching document. |
+||:bulb: It could be viewed that `should` is more like a logical `OR` where as `must` is a logical `AND` |
 |must_not|The clause (query) must not appear in the matching documents. Clauses are executed in filter context meaning that scoring is ignored and clauses are considered for caching. Because scoring is ignored, a score of 0 for all documents is returned.|
 
 
@@ -382,6 +383,8 @@ GET shakespeare/_search
   }
 }    
 ```
+
+> Answer: 26
 
 </details>
 <hr>
@@ -426,6 +429,9 @@ GET shakespeare/_search
   }
 } 
 ```
+
+> Answer: 2
+
 </details>
 <hr>
 
@@ -474,7 +480,7 @@ POST /kibana_sample_data_logs/_async_search?size=0
     "timed_out" : false,
 ...
 ```
-
+:bulb: Note the long `id` string above.
 
 ## GET async searchedit
 > The get async search API retrieves the results of a previously submitted async search request given its `id`. 
@@ -509,13 +515,15 @@ DELETE /_async_search/FmRldE8zREVEUzA2ZVpUeGs2ejJFUFEaMkZ5QTVrSTZSaVN3WlNFVmtlWH
 
 We will be using the `kibana_sample_data_ecommerce` index data for these examples.
 
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/search-aggregations.html
+
 Show only the aggs results, and not all of the matches: 
-https://www.elastic.co/guide/en/elasticsearch/reference/7.2/returning-only-agg-results.html
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/search-aggregations.html#return-only-agg-results
 
 
 ## Metric Aggregations
 
-https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-aggregations-metrics.html
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/search-aggregations-metrics.html
 
 ### Common
 - Avg Aggregation
@@ -544,7 +552,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-aggregations-
 <details>
   <summary>View Solution (click to reveal)</summary>
 
-https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-aggregations-metrics-extendedstats-aggregation.html
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/search-aggregations-metrics-extendedstats-aggregation.html
 
 > Note: We use `"size": 0` to only return the aggs results and not all the actual matching documents.
 
@@ -622,10 +630,13 @@ https://www.elastic.co/guide/en/elasticsearch/reference/7.2/search-aggregations-
 - Significant Text Aggregation
 - Terms Aggregation
 
-:question: Display all sales per day
+:question: Display number of sales per day
 
 <details>
   <summary>View Solution (click to reveal)</summary>
+
+
+:bulb: `calendar_interval` comes out wrong in the kibana auto-complete.  `"interval": "month"` should be `"calendar_interval": "month"`.
 
 ```json
 GET kibana_sample_data_ecommerce/_search?filter_path=aggregations
@@ -682,12 +693,27 @@ GET kibana_sample_data_ecommerce/_search?filter_path=aggregations
 > - Then you need to group by category
 > - then Sum the sales (X-axis)
 
-Create the `date_histogram`
+Basially here, you create each aggregation separately and then combine in the end.
+
+Create the `date_histogram` as in the previous example.
 ```json 
-todo?
+GET kibana_sample_data_ecommerce/_search?filter_path=aggregations
+{
+  "size":0,
+  "aggs": {
+    "date_hist_y_axis": {
+      "date_histogram": {
+        "field": "order_date",
+        "calendar_interval": "1d",
+        "min_doc_count": 1
+      }
+    }
+  }
+}
+
 ```
 
-Aggregate by the `category` grouping - here you are testing your aggregation.
+Aggregate by the `category` grouping - here you are testing your sub-aggregation.
 
 You should also note the number of categories, so you don't `size` the aggregation too small later on.
 
@@ -819,8 +845,54 @@ GET kibana_sample_data_ecommerce/_search?filter_path=aggregations
   }
 }
 ```
+
+:bulb: Note the `order` in the `terms` for category agg.
+
 </details>
 <hr>
+
+## Bonus Question
+
+:question: Display weekly cumulative sales
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+Based on pipeline aggregations (now removed from the exam topics)
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/search-aggregations-pipeline.html
+
+Note that `buckets_path` points back to the parent aggs `sales`
+
+```json
+POST /kibana_sample_data_ecommerce/_search?filter_path=aggregations.sales_per_week.buckets.cumulative_sales.value,aggregations.sales_per_week.buckets.key_as_string
+{
+  "size": 0,
+  "aggs": {
+    "sales_per_week": {
+      "date_histogram": {
+        "field": "order_date",
+        "calendar_interval": "week"
+      },
+      "aggs": {
+        "sales": {
+          "sum": {
+            "field": "taxful_total_price"
+          }
+        },
+        "cumulative_sales": {
+          "cumulative_sum": {
+            "buckets_path": "sales" 
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+</details>
+<hr>
+
 
 
 
