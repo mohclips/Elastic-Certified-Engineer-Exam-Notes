@@ -1,0 +1,43 @@
+#
+# docker file default
+#
+
+##########################################################################
+#
+# ** THIS IS AN AUTO-GENERATED FILE **
+#
+
+# Default Kibana configuration for docker target
+server.host: "0"
+#elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+monitoring.ui.container.elasticsearch.enabled: true
+
+##########################################################################
+#
+# My changes below
+#
+
+# see: https://www.elastic.co/guide/en/kibana/current/settings.html
+
+elasticsearch.username: "elastic"
+elasticsearch.password: "Password01"
+
+elasticsearch.hosts: [ "http://elasticsearch-east:9200" ]
+
+newsfeed.enabled: false
+server.name: "kibana-east"
+
+# https://www.elastic.co/guide/en/kibana/current/reporting-settings-kb.html
+xpack.reporting.kibanaServer.hostname: "0.0.0.0"
+xpack.reporting.encryptionKey: "123456789012345678901234567890abcdefghi"
+xpack.security.encryptionKey: "123456789012345678901234567890abcdefghi"
+
+# https://www.elastic.co/guide/en/kibana/master/alert-action-settings-kb.html
+xpack.encryptedSavedObjects.encryptionKey: "123456789012345678901234567890abcdefghi"
+
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/auditing-settings.html
+xpack.security.audit.enabled: true
+
+# fix removed features in 7.13.1
+xpack.discoverEnhanced.actions.exploreDataInContextMenu.enabled: true
+xpack.discoverEnhanced.actions.exploreDataInChart.enabled: true

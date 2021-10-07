@@ -478,7 +478,104 @@ https://www.elastic.co/guide/en/elasticsearch/reference/7.13/searchable-snapshot
 
 https://www.elastic.co/guide/en/elasticsearch/reference/7.13/ilm-searchable-snapshot.html
 
-#TODO:
+Well worth watching: https://www.youtube.com/watch?v=nN6JNP9i3qQ
+
+:question:  Create a searchable snapshot of the Kibana eCommerce data.
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+## Set cache size
+
+> Defaults to 90% of total disk space for dedicated frozen data tier nodes. Otherwise defaults to 0b.
+
+`xpack.searchable.snapshot.shared_cache.size=100mb`
+
+## create snapshot repository
+
+```json
+PUT /_snapshot/my_snapshots
+{
+    "type": "fs",
+    "settings": {
+        "location": "/tmp/snapshots",
+        "compress": true
+    }
+}
+```
+
+## check repo
+
+```json
+GET _snapshot/my_snapshots
+```
+
+## create a snapshot
+
+```json
+PUT /_snapshot/my_snapshots/%3Cecomm-snapshot-%7Bnow%2Fd%7D%3E
+{
+  "indices": "kibana_sample_data_ecommerce",
+  "ignore_unavailable": true,
+  "include_global_state": false
+}
+```
+
+## list snapshots
+
+```json
+GET _snapshot/my_snapshots/ecomm*
+```
+
+## recover snapshot into local cache by mounting it
+
+This is the Pièce de résistance - the snapshot is `mounted` in local shared cache.
+
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/searchable-snapshots-api-mount-snapshot.html
+
+```json
+POST _snapshot/my_snapshots/ecomm-snapshot-2021.10.07/_mount?storage=shared_cache
+{
+  "index" : "kibana_sample_data_ecommerce",
+  "renamed_index": "mounted-ecomm"
+}
+```
+
+
+## test mounted snapshot
+
+```json
+GET _cat/indices/mounted-ecomm?v
+
+GET _cat/count/mounted-ecomm
+GET mounted-ecomm/_count
+GET mounted-ecomm/_search
+{
+  "size": 5, 
+  "query": {
+    "match_all": {}
+  }
+}
+```
+
+## clean up
+
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/searchable-snapshots-api-clear-cache.html
+
+clear the cache
+```json
+POST /mounted-ecomm/_searchable_snapshots/cache/clear
+```
+
+and delete mounted index
+```json
+DELETE mounted-ecomm
+```
+
+</details>
+<hr>
+
+
 
 
 # Configure a cluster for cross cluster search
@@ -557,13 +654,149 @@ https://www.elastic.co/guide/en/elasticsearch/reference/7.13/xpack-ccr.html
 >
 > Cross-cluster replication uses an active-passive model. You index to a leader index, and the data is replicated to one or more read-only follower indices. Before you can add a follower index to a cluster, you must configure the remote cluster that contains the leader index.
 
-This is a heavily involved process - follow this link
+This is a heavily involved process - follow this link - with the guidelines below
 https://www.elastic.co/guide/en/elasticsearch/reference/7.13/ccr-getting-started.html
 
-#TODO:  build two clusters, add sample data and replicate between them
-!! needs new docker compose
+:question: Replicate `kibana_sample_data_ecommerce` from the `east` cluster to the `west cluster`
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+## Docker compose
+
+Use the `2es-2kibana-xpack-cluster-713.yml` docker compose file.
+This also requires `kibana-east.yml` and `kibana-west.yml`.
+
+The docker-compose file has the correct node settings applied.
+
+`node.roles=master,data,ingest,remote_cluster_client`
+
+## Licencing
+
+You will have to setup a 30day trial licence, to be able to do this part of the lab. This can easily be done once the nodes are up.
+
+`Stack Management -> License management -> Start a 30-day trial -> Start trial {click} -> Start my trial {click}`
+
+## Create cluster replication
+
+Do this in Kibana as per the instructions above.
+
+:warning: You will have to start one incognito/private browsing session or use different browsers to connect to both kibana instnaces at once.  This is due to the browser security cookies overwriting each other and subsequently logging you out everytime. :)
+
+`Stack Management -> Remote Clusters -> Add a remote cluster`
 
 
+| Cluster | Kibana URL | Remote Name | Seed Nodes | Direction |
+| --- | --- | --- | --- | --- |
+| East | http://\<your host ip>:5601 | west-cluster | esnode-west:9300 | Leader | 
+| West | http://\<your host ip>:5602 | east-cluster | esnode-east:9300 | Follower |
+
+
+## Add sample data
+
+Add the sample data to the Leader (east)
+
+Add the Kibana eCommerce sample data.
+
+## Set up cross-cluster replication
+
+Replicate the following index from East to West.
+
+`kibana_sample_data_ecommerce`
+
+
+> The index status changes to Paused. When the remote recovery process is complete, the index following begins and the status changes to Active.
+
+
+## Create an auto-follow pattern and add documents to the index
+
+On West, create an auto-follow pattern `test-ccr-index-*`
+
+On East, create a timeseries index `test-ccr-index-000000`
+
+Add docs to the new time series index, and confirm they are on West
+
+
+| Name | Remote Cluster | Index Patterns | Prefix | Suffix | 
+| --- | --- | --- | --- | --- |
+| east-auto-follow | east-cluster | test-ccr-index-* | follower- | `none` |
+
+
+### Create the index and add the docs to the leader index (east)
+
+```json
+PUT test-ccr-index-000000
+{
+  "settings": {
+    "number_of_replicas": 0,
+    "number_of_shards": 1
+  },
+  "mappings": {
+    "properties": {
+      "@timestamp" : {
+        "type": "date"
+      },
+      "data": {
+        "type": "text"
+      }
+    }
+  }
+}
+```
+
+Add the docs
+```json
+POST test-ccr-index-000000/_doc
+{
+  "@timestamp": "2021-10-07T11:50:00.000Z",
+  "data" : "test data"
+}
+
+POST test-ccr-index-000000/_doc
+{
+  "@timestamp": "2021-10-07T11:55:00.000Z",
+  "data" : "test data"
+}
+```
+
+Test the index
+```json
+GET test-ccr-index-000000/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+```
+
+
+### Check data in follower index (west)
+
+```json
+GET _cat/indices/follow*
+
+// output
+
+health status index                                 uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+green  open   follower-kibana_sample_data_ecommerce RwN36YDWRNuLffDGftF0eA   1   0       4675            0      4.4mb          4.4mb
+green  open   follower-test-ccr-index-000000        K8gUG9L2Rz2oqTX-OB_P3A   1   0          2            0      3.8kb          3.8kb
+
+```
+
+test the index
+
+```json
+GET follower-test-ccr-index-000000/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+```
+
+
+</details>
+<hr>
 
 # Define role-based access control using Elasticsearch Security
 

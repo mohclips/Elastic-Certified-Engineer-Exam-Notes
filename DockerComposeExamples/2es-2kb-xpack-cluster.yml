@@ -1,0 +1,107 @@
+# 2 clusters each 1 Elasticsearch node, 1 Kibana instance - (v7.13.2)
+version: '3'
+services:
+#
+# east
+#
+  # elasticsearch
+  esnode-east:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
+    container_name: esnode-east
+    environment:
+      - node.name=esnode
+      - cluster.name=elastic-cluster-east
+      - discovery.type=single-node
+      - node.roles=master,data,ingest,remote_cluster_client
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.license.self_generated.type=basic
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=Password01
+      - path.repo=/tmp
+      - xpack.searchable.snapshot.shared_cache.size=100mb
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esnode-east-data:/usr/share/elasticsearch/data
+    ports:
+      - 9201:9200
+      - 9301:9300
+    networks:
+      - elastic-net
+  # kibana
+  kibana-east:
+    image: docker.elastic.co/kibana/kibana:7.13.2
+    container_name: kibana-east
+    volumes:
+      - ./kibana-east.yml:/usr/share/kibana/config/kibana.yml
+
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 5601:5601
+    networks:
+      - elastic-net
+    links:
+      - esnode-east:elasticsearch-east
+
+#
+# west
+#
+  # elasticsearch
+  esnode-west:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
+    container_name: esnode-west
+    environment:
+      - node.name=esnode
+      - cluster.name=elastic-cluster-west
+      - node.roles=master,data,ingest,remote_cluster_client
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.license.self_generated.type=basic
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=Password01
+      - path.repo=/tmp
+      - xpack.searchable.snapshot.shared_cache.size=100mb
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esnode-west-data:/usr/share/elasticsearch/data
+    ports:
+      - 9202:9200
+      - 9302:9300
+    networks:
+      - elastic-net
+  # kibana
+  kibana-west:
+    image: docker.elastic.co/kibana/kibana:7.13.2
+    container_name: kibana-west
+    volumes:
+      - ./kibana-west.yml:/usr/share/kibana/config/kibana.yml
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 5602:5601
+    networks:
+      - elastic-net
+    links:
+      - esnode-west:elasticsearch-west
+
+
+volumes:
+  esnode-east-data:
+    driver: local
+  esnode-west-data:
+    driver: local
+
+networks:
+  elastic-net:
