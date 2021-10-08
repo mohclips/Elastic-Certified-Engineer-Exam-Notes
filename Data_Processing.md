@@ -61,7 +61,7 @@ PUT /henry4
    "properties": {
     "speaker": {"type": "keyword"},
     "line_id": {
-      "type": "integer",
+      "type": "keyword",
       "doc_values": false
     },
     "speech_number": {"type": "integer"}
