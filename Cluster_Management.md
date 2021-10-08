@@ -616,6 +616,39 @@ Here we have three clusters, one on the local network somewhere and two others o
 
 See [this section](#create-cluster-replication)
 
+```json
+GET _cluster/settings?pretty&flat_settings
+
+// output
+
+{
+  "persistent" : {
+    "cluster.remote.west-cluster.mode" : "sniff",
+    "cluster.remote.west-cluster.node_connections" : "3",
+    "cluster.remote.west-cluster.seeds" : [
+      "esnode-west:9300"
+    ],
+    "cluster.remote.west-cluster.skip_unavailable" : "false"
+  },
+  "transient" : { }
+}
+```
+
+```json
+GET west-cluster:follower-kibana_sample_data_ecommerce/_count
+
+// output
+
+{
+  "count" : 4675,
+  "_shards" : {
+    "total" : 1,
+    "successful" : 1,
+    "skipped" : 0,
+    "failed" : 0
+  }
+}
+```
 
 ## Perform as remote cluster search
 
