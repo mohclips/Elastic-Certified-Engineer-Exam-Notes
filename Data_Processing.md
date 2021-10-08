@@ -46,7 +46,9 @@ https://www.elastic.co/guide/en/elasticsearch/reference/7.13/mapping-types.html
 > 
 > If you’re unsure which to use, you can use a multi-field to map the data as both a keyword and a numeric data type.
 
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/doc-values.html
 
+> All fields which support doc values have them enabled by default. If you are sure that you __don’t need to sort or aggregate__ on a field, or access the field value from a script, you can disable doc values in order to save disk space
 
 
 ```json
@@ -58,14 +60,15 @@ PUT /henry4
  "mappings": {
    "properties": {
     "speaker": {"type": "keyword"},
-    "line_id": {"type": "integer"},
+    "line_id": {
+      "type": "integer",
+      "doc_values": false
+    },
     "speech_number": {"type": "integer"}
   }
  }
 }
 ```
-
-:bulb: #FIXME: I think `line_id` should be a keyword
 
 </details>
 <hr/>
