@@ -612,6 +612,11 @@ PUT _cluster/settings
 ```
 Here we have three clusters, one on the local network somewhere and two others out on the internet.
 
+:bulb: This setup can be easily achieved within the Kibana GUI, and is part of the cross cluster replication below.
+
+See [this section](#create-cluster-replication)
+
+
 ## Perform as remote cluster search
 
 ```json
