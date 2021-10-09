@@ -1,6 +1,6 @@
 # Kreuzwerker Aggregations
 
-# See https://medium.com/kreuzwerker-gmbh/exercises-for-the-elastic-certified-engineer-exam-search-and-aggregations-1eefcfb6e992
+:bulb: See https://medium.com/kreuzwerker-gmbh/exercises-for-the-elastic-certified-engineer-exam-search-and-aggregations-1eefcfb6e992
 
 These are very good.  My answers below.
 
@@ -9,16 +9,18 @@ These are very good.  My answers below.
 
 If you feel any of these are incorrect please raise an issue ticket. :)
 
-
-
+```json
 GET kibana_sample_data_flights
+```
 
-#
 # Metrics
-#
 
-# Create an aggregation named "max_distance" that calculates the 
-#    maximum value of the `DistanceKilometers` field
+:question: Create an aggregation named "max_distance" that calculates the maximum value of the `DistanceKilometers` field
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0, 
@@ -30,9 +32,16 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
 
-# Create an aggregation named "stats_flight_time" that computes 
-#    stats over the value of the `FlightTimeMin` field
+:question: Create an aggregation named "stats_flight_time" that computes stats over the value of the `FlightTimeMin` field
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0, 
@@ -44,11 +53,17 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
 
+:question: Create two aggregations, named "cardinality_origin_cities" and "cardinality_dest_cities", that count the distinct values of the `OriginCityName` and `DestCityName` fields, respectively
 
-# Create two aggregations, named "cardinality_origin_cities" and 
-#    "cardinality_dest_cities", that count the distinct values of 
-#    the `OriginCityName` and `DestCityName` fields, respectively
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+1.
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0, 
@@ -60,7 +75,10 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
 
+2.
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0, 
@@ -72,15 +90,22 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
 
-#
+
 # Buckets
-#
 
 
-# Create an aggregation named "popular_origin_cities" that 
-#   calculates the number of flights grouped by the 
-#   `OriginCityName` field
+:question: Create an aggregation named "popular_origin_cities" that 
+   calculates the number of flights grouped by the 
+   `OriginCityName` field
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0, 
@@ -92,8 +117,16 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
 
-# As above, but return only 5 buckets and in descending order
+:question: As above, but return only 5 buckets and in descending order
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0, 
@@ -107,9 +140,17 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
 
-# Create an aggregation named "avg_price_histogram" that groups the 
-#   documents based on `AvgTicketPrice` by intervals of 250
+:question: Create an aggregation named "avg_price_histogram" that groups the 
+   documents based on `AvgTicketPrice` by intervals of 250
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0, 
@@ -122,10 +163,17 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
 
+:question: Create an aggregation named "popular_carriers" that calculates the 
+   number of flights grouped by the `Carrier` field
 
-# Create an aggregation named "popular_carriers" that calculates the 
-#   number of flights grouped by the `Carrier` field
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0, 
@@ -137,10 +185,18 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
 
-# Add a sub-aggregation to "popular_carriers", named 
-#   "carrier_stats_delay", that computes stats over the value of the 
-#   `FlightDelayMin` field for the related bucket of carriers
+:question: Add a sub-aggregation to "popular_carriers", named 
+   "carrier_stats_delay", that computes stats over the value of the 
+   `FlightDelayMin` field for the related bucket of carriers
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0, 
@@ -159,12 +215,19 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
 
-# Add a second sub-aggregation to "popular_carriers", named 
-#   "carrier_max_delay", that shows the flight having the maximum 
-#   value of the `FlightDelayMin` field for the related bucket of 
-#   carriers
+:question: Add a second sub-aggregation to "popular_carriers", named 
+   "carrier_max_delay", that shows the flight having the maximum 
+   value of the `FlightDelayMin` field for the related bucket of 
+   carriers
 
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0,
@@ -188,15 +251,21 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
 
-#
 # date histograms
-#
 
-# Use the `timestamp` field to create an aggregation named 
-#   "flights_every_10_days" that groups the number of flights by an 
-#   interval of 10 days
 
+:question: Use the `timestamp` field to create an aggregation named 
+   "flights_every_10_days" that groups the number of flights by an 
+   interval of 10 days
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+```json
 POST kibana_sample_data_flights/_search
 {
   "size": 0,
@@ -209,13 +278,22 @@ POST kibana_sample_data_flights/_search
     }
   }
 }
+```
 
-# wut!
-# "type" : "x_content_parse_exception",
-#    "reason" : "[7:39] [date_histogram] failed to parse field [calendar_interval]",
 
-# > If you attempt to use multiples of calendar units, the aggregation will fail because only singular calendar units are supported:
+## wut!
+<pre>
+  "type" : "x_content_parse_exception",
+  "reason" : "[7:39] [date_histogram] failed to parse field [calendar_interval]",
+</pre>
 
+> If you attempt to use multiples of calendar units, the aggregation will fail because only singular calendar units are supported:
+
+retry, with the old style `interval`
+
+tah dah!
+
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0,
@@ -228,10 +306,17 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
 
-# Use the `timestamp` field to create an aggregation named 
-#   "flights_by_day" that groups  the number of flights by day 
+:question: Use the `timestamp` field to create an aggregation named 
+   "flights_by_day" that groups  the number of flights by day 
 
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0,
@@ -244,11 +329,18 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
 
-# Add a sub-aggregation to “flights_by_day”, named 
-#   “destinations_by_day”, that groups the day buckets by the value 
-#   of the `DestCityName` field
+:question: Add a sub-aggregation to “flights_by_day”, named 
+   “destinations_by_day”, that groups the day buckets by the value 
+   of the `DestCityName` field
 
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0,
@@ -268,13 +360,19 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
 
+:question: Add a sub-aggregation to the sub-aggregation 
+   "destinations_by_day", named "popular_destinations_by_day", that 
+   returns the 3 most popular documents for each bucket (i.e., 
+   ordered by their score)
 
-# Add a sub-aggregation to the sub-aggregation 
-#   "destinations_by_day", named "popular_destinations_by_day", that 
-#   returns the 3 most popular documents for each bucket (i.e., 
-#   ordered by their score)
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0,
@@ -301,10 +399,17 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
 
-# Update “popular_destinations_by_day” to display only the 
-#   `SourceCityName` field in for each top hit object
+:question: Update “popular_destinations_by_day” to display only the 
+   `SourceCityName` field in for each top hit object
 
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0,
@@ -336,14 +441,20 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
 
-#
 # pipelines
-#
 
-# Remove the "popular_destinations_by_day” sub-sub-aggregation from 
-#   “flights_by_day”
 
+:question: Remove the "popular_destinations_by_day” sub-sub-aggregation from 
+   “flights_by_day”
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0,
@@ -363,12 +474,19 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
 
-# Add a pipeline aggregation to "flights_by_day", named 
-#   "most_popular_destination_of_the_day", that identifies the 
-#   "popular_destinations_by_day” bucket with the most documents for 
-#   each day
+:question: Add a pipeline aggregation to "flights_by_day", named 
+   "most_popular_destination_of_the_day", that identifies the 
+   "popular_destinations_by_day” bucket with the most documents for 
+   each day
 
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0,
@@ -400,9 +518,17 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
 
-# with order:desc and size:1 - just so you can see the right value in the destinations_by_day buckets
 
+:bulb: with `order:desc` and `size:1` - just so you can see the right value in the destinations_by_day buckets
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0,
@@ -438,12 +564,17 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
 
+:question: Add a pipeline aggregation named "day_with_most_flights" that 
+   identifies the “flights_by_day” bucket with the most documents
 
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
-# Add a pipeline aggregation named "day_with_most_flights" that 
-#   identifies the “flights_by_day” bucket with the most documents
-
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0,
@@ -484,12 +615,19 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
 
-# Add a pipeline aggregation named 
-#   "day_with_the_most_popular_destination_over_all_days" that 
-#   identifies the “flights_by_day” bucket with the largest 
-#   “most_popular_destination_of_the_day” value
+:question: Add a pipeline aggregation named 
+   "day_with_the_most_popular_destination_over_all_days" that 
+   identifies the “flights_by_day” bucket with the largest 
+   “most_popular_destination_of_the_day” value
 
+<details>
+  <summary>View Solution (click to reveal)</summary>
+  
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0,
@@ -535,3 +673,8 @@ GET kibana_sample_data_flights/_search
     }
   }
 }
+```
+</details>
+<hr>
+
+### Fin!
