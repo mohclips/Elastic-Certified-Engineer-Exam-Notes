@@ -62,8 +62,6 @@ GET kibana_sample_data_flights/_search
 <details>
   <summary>View Solution (click to reveal)</summary>
 
-1.
-```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0, 
@@ -72,17 +70,7 @@ GET kibana_sample_data_flights/_search
       "cardinality": {
         "field": "OriginCityName"
       }
-    }
-  }
-}
-```
-
-2.
-```json
-GET kibana_sample_data_flights/_search
-{
-  "size": 0, 
-  "aggs": {
+    },
     "cardinality_dest_cities": {
       "cardinality": {
         "field": "DestCityName"
