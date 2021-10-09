@@ -62,6 +62,7 @@ GET kibana_sample_data_flights/_search
 <details>
   <summary>View Solution (click to reveal)</summary>
 
+```json
 GET kibana_sample_data_flights/_search
 {
   "size": 0, 
