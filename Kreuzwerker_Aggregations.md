@@ -313,7 +313,7 @@ GET kibana_sample_data_flights/_search
     "flights_by_day": {
       "date_histogram": {
         "field": "timestamp",
-        "interval": "1d"
+        "calendar_interval": "1d"
       }
     }
   }
@@ -337,7 +337,7 @@ GET kibana_sample_data_flights/_search
     "flights_by_day": {
       "date_histogram": {
         "field": "timestamp",
-        "interval": "1d"
+        "calendar_interval": "1d"
       },
       "aggs": {
         "destinations_by_day": {
@@ -369,7 +369,7 @@ GET kibana_sample_data_flights/_search
     "flights_by_day": {
       "date_histogram": {
         "field": "timestamp",
-        "interval": "1d"
+        "calendar_interval": "1d"
       },
       "aggs": {
         "destinations_by_day": {
@@ -393,7 +393,7 @@ GET kibana_sample_data_flights/_search
 <hr>
 
 :question: Update “popular_destinations_by_day” to display only the 
-   `SourceCityName` field in for each top hit object
+   `OriginCityName` field in for each top hit object
 
 <details>
   <summary>View Solution (click to reveal)</summary>
@@ -406,7 +406,7 @@ GET kibana_sample_data_flights/_search
     "flights_by_day": {
       "date_histogram": {
         "field": "timestamp",
-        "interval": "1d"
+        "calendar_interval": "1d"
       },
       "aggs": {
         "destinations_by_day": {
@@ -451,7 +451,7 @@ GET kibana_sample_data_flights/_search
     "flights_by_day": {
       "date_histogram": {
         "field": "timestamp",
-        "interval": "1d"
+        "calendar_interval": "1d"
       },
       "aggs": {
         "destinations_by_day": {
@@ -483,7 +483,7 @@ GET kibana_sample_data_flights/_search
     "flights_by_day": {
       "date_histogram": {
         "field": "timestamp",
-        "interval": "1d"
+        "calendar_interval": "1d"
       },
       "aggs": {
         "destinations_by_day": {
@@ -508,6 +508,11 @@ GET kibana_sample_data_flights/_search
   }
 }
 ```
+
+:bulb: The trick here is that max_bucket only works on a numeric, so you need a sub-sub agg to count the DestCityName and apply the pipeline agg to that. (`dest_counter` in this case.)
+
+Then you can apply the buckets_path to the value in that sub-sub agg.
+
 </details>
 <hr>
 
@@ -624,7 +629,7 @@ GET kibana_sample_data_flights/_search
     "flights_by_day": {
       "date_histogram": {
         "field": "timestamp",
-        "interval": "1d"
+        "calendar_interval": "1d"
       },
       "aggs": {
         "destinations_by_day": {
