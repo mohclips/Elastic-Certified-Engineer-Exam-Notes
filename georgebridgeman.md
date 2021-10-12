@@ -7,7 +7,7 @@ See https://georgebridgeman.com/exercises/olympic-data/olympics-01/
 Download CSV from here:
 https://www.kaggle.com/heesoo37/120-years-of-olympic-history-athletes-and-results/version/2
 
-Upload into `olympic-events` vai the `data visualiser`
+Upload into `olympic-events` viq the `data visualiser` in Kibana.
 
 ## Skip Exercises 01-03
 
@@ -15,6 +15,9 @@ We don't need these anymore, as we use the data visualiser from July 2021 onward
 
 ## Exercise 04
 Validate that the data was imported correctly by using a single API call to show the index name, index health, number of documents, and the size of the primary store. The details in the response must be in that order, with headers, and for the new index only.
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET _cat/indices/olympic-events?v&h=index,health,docs.count,pri.store.size
@@ -24,9 +27,14 @@ GET _cat/indices/olympic-events?v&h=index,health,docs.count,pri.store.size
 index          health docs.count pri.store.size
 olympic-events yellow     271116         30.9mb
 ```
+</details>
+<hr>
 
 ## Exercise 05
 The cluster health is yellow. Use a cluster API that can explain the problem.
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET _cluster/allocation/explain
@@ -68,9 +76,14 @@ GET _cluster/allocation/explain
 }
 ```
 
+</details>
+<hr>
+
 ## Exercise 06
 Change the cluster or index settings as required to get the cluster to a green status.
 
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ## view settings
 
@@ -124,10 +137,14 @@ index          health docs.count pri.store.size
 olympic-events green      271116         30.9mb
 ```
 
+</details>
+<hr>
 
 ## Exercise 07
 Look at how Elasticsearch has applied very general-purpose mappings to the data. Why has it chosen to use a text type for the Age field? Find all unique values for the Age field; there are less than 100 unique values for the Age field. Look for any suspicious values.
 
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ### View
 
@@ -203,8 +220,14 @@ GET olympic-events/_search?filter_path=aggregations
 
 Suspicious values = `NA`
 
+</details>
+<hr>
+
 ## Exercise 08
 We will be deleting data in the next exercise; making a backup is always prudent. Without making any changes to the data, reindex the olympic-events index into a new index called olympic-events-backup.
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 POST _reindex?wait_for_completion=false
@@ -221,6 +244,7 @@ POST _reindex?wait_for_completion=false
 ```
 
 ### Check task is complete
+
 
 ```json
 GET _tasks/DRGgT8z3SEOPFPqlioq2TQ:2409291
@@ -290,8 +314,6 @@ GET _tasks/DRGgT8z3SEOPFPqlioq2TQ:2409291?filter_path=completed,response
 }
 ```
 
-
-
 ### Check health etc
 
 ```json
@@ -340,10 +362,15 @@ green  open   olympic-events        K-A5nA5BTgGw3gtdH5rh6w   1   0     271116   
 
 So, there we have it. Interesting, no?
 
+</details>
+<hr>
 
 ## Exercise 09
 The Height and Weight fields suffer from the same problem as the Age field. Later exercises will require numeric-type queries for these fields so we want to exclude any document we can’t use in our analyses. In a single request, delete all documents from the olympic-events index that have a value of NA for either the Age, Height or Weight field.
 
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 Query first to make sure it works properly
 
@@ -478,13 +505,18 @@ GET _tasks/DRGgT8z3SEOPFPqlioq2TQ:2418803
 
 Note: `task.status.deleted = 64951`
 
+</details>
+<hr>
 
 ## Exercise 10
 Notice how the Games field contains both the Olympic year and season. Create an ingest pipeline called split_games that will split this field into two new fields - year and season - and remove the original Games field.
 
 :bulb: I strongly suggest you do this in Kibana
 
-# Get a test document
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+### Get a test document
 ```json
 GET olympic-events/_search?filter_path=hits.hits
 {
@@ -536,7 +568,7 @@ Use this as your test data in kibana
 - Create each processor at a time
 - Test the document against the newly created processor and check the results.
 - There are numerous ways to skin a cat - mine follows below
-- There is a `Year` and `Season` feild alreasy, but we have been asked to create `year` and `season` (all lowercase)
+- There is a `Year` and `Season` field already, but we have been asked to create `year` and `season` (all lowercase)
 
 ```json
 PUT _ingest/pipeline/split_games
@@ -574,6 +606,8 @@ PUT _ingest/pipeline/split_games
 }
 ```
 
+</details>
+<hr>
 
 ## Exercise 11
 Ensure your new pipeline is working correctly by simulating it with these values:
@@ -582,6 +616,9 @@ Ensure your new pipeline is working correctly by simulating it with these values
 2014 Winter
 
 :bulb: skip this part if you used Kibana in the previous question.  Or have a go anyway...
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 POST _ingest/pipeline/split_games/_simulate
@@ -636,6 +673,9 @@ POST _ingest/pipeline/split_games/_simulate
 }
 ```
 
+</details>
+<hr>
+
 ## Exercise 12
 We’ll now start to clean up the mappings. Create a new index called olympic-events-fixed with 1 shard, 0 replicas, and the following mapping:
 
@@ -656,6 +696,9 @@ We’ll now start to clean up the mappings. Create a new index called olympic-ev
 |event|	text + keyword|
 |medal|	keyword|
 
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 Quicker to do this in the Kibana GUI
 
@@ -733,9 +776,14 @@ Quicker to do this in the Kibana GUI
 }
 ```
 
+</details>
+<hr>
 
 ## Exercise 13
 Reindex the data in the olympic-events index into the new olympic-events-fixed index created in exercise 12 using the split_games pipeline created in exercise 10.
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 POST _reindex?wait_for_completion=false
@@ -750,6 +798,8 @@ POST _reindex?wait_for_completion=false
   }
 }
 
+// check the task
+
 GET _tasks/DRGgT8z3SEOPFPqlioq2TQ:2492188
 
 // wait for completion
@@ -762,6 +812,8 @@ GET olympic-events-fixed/_search
 }
 ```
 
+</details>
+<hr>
 
 
 ## Exercise 14
@@ -772,6 +824,10 @@ Also notice that the new mapping uses athleteId instead of ID, athleteName inste
 We’ll need to correct this by tearing down the new index and reindexing with an additional pipeline to use the correct field names. To save us constantly having to recreate the index with the right mappings, we can leverage index templates.
 
 Create an index template called olympic-events for new indices with a name beginning with olympic-events-. Use the mapping and settings we defined in exercise 12 and configure the mapping so Elasticsearch will throw an exception if a document contains a field not defined in the mapping.
+
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET olympic-events-fixed?filter_path=*.mappings
@@ -857,6 +913,8 @@ PUT _template/olympic-events
 
 ```
 
+</details>
+<hr>
 
 
 ## Exercise 15
@@ -865,6 +923,9 @@ Create a new ingest pipeline called reconcile_fields to replace all fields with 
 Again, do this in Kibana GUI.  You can duplicate pipeline processors with the elipsis dots menu at the right hand side.
 Also pipelines can all other pipelines.
 
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 PUT _ingest/pipeline/reconcile_fields
@@ -951,6 +1012,9 @@ PUT _ingest/pipeline/reconcile_fields
 }
 ```
 
+</details>
+<hr>
+
 ## Exercise 16
 Test your new pipeline with the following document:
 
@@ -972,7 +1036,10 @@ Test your new pipeline with the following document:
 }
 ```
 
-Do this in the kibana GUI.   You should have done this in the previous step anyway.
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+Do this in the kibana GUI.   You should have done this part in the previous step anyway.
 
 ```json
 {
@@ -1007,16 +1074,27 @@ Do this in the kibana GUI.   You should have done this in the previous step anyw
 }
 ```
 
+</details>
+<hr>
 
 ## Exercise 17
 Delete the olympic-events-fixed index.
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 DELETE olympic-events-fixed
 ```
 
+</details>
+<hr>
+
 ## Exercise 18
 Reindex the data in the olympic-events index into a new olympic-events-fixed index using the reconcile_fields pipeline. If Elasticsearch throws any exceptions, you may have missed a field in your pipeline.
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 POST _reindex?wait_for_completion=false
@@ -1086,10 +1164,17 @@ GET olympic-events-fixed/_search
     ]
 
 ```
-Note: that the data from Kaggle contians `Season`, `Year` already so these have been duplicated.  
+Note: that the data from Kaggle contains `Season`, `Year` already so these have been duplicated.  
+
+</details>
+<hr>
+
 
 ## Exercise 19
 Write a single query to find the name of all Gymnastics events. There are less than 100 Gymnastics event types.
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET olympic-events-fixed/_search?filter_path=aggregations
@@ -1110,9 +1195,14 @@ GET olympic-events-fixed/_search?filter_path=aggregations
 }
 ```
 
+</details>
+<hr>
+
 ## Exercise 20
 Write a single query to find the average weight for male and female competitors in Gymnastics events.
 
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET olympic-events-fixed/_search?filter_path=aggregations
@@ -1142,8 +1232,14 @@ GET olympic-events-fixed/_search?filter_path=aggregations
 }
 ```
 
+</details>
+<hr>
+
 ## Exercise 21
 Write a single query to find the year that each of the 590 unique events first appeared in the Olympic Games, and which events were introduced most recently.
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET olympic-events-fixed/_search?filter_path=aggregations
@@ -1216,6 +1312,9 @@ GET olympic-events-fixed/_search?filter_path=aggregations
 
 I found this one a little ambiguous, `which events were introduced` is plural.   So i sorted the year.
 
+</details>
+<hr>
+
 ## Exercise 22
 Write a query to return only the following fields for the 50 tallest athletes in the 2016 Rio de Janeiro Games:
 
@@ -1226,6 +1325,10 @@ Write a query to return only the following fields for the 50 tallest athletes in
 - height
 - weight
 - gender
+
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 Build the query
 ```json
@@ -1324,8 +1427,14 @@ GET olympic-events-fixed/_search
 }
 ```
 
+</details>
+<hr>
+
 ## Exercise 23
 The weight and height fields are in metric. Weight is in kg and height is in cm. Add a scripted field called weightLbs to the previous query to return the weight in lbs. The formula for this is: Weight * 2.2
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET olympic-events-fixed/_search
@@ -1410,10 +1519,14 @@ GET olympic-events-fixed/_search
 
 :bulb: WTF?! moment.  `115 * 2.2 = 253`, AND NOT `253.00000000000003`  !!!!!
 
-
+</details>
+<hr>
 
 ## Exercise 24
 Add a scripted field called bmi to the previous query to return the BMI for each athlete, calculated using the following formula: Weight / (Height in m squared)t
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET olympic-events-fixed/_search
@@ -1473,11 +1586,15 @@ GET olympic-events-fixed/_search
 }
 ```
 
-
+</details>
+<hr>
 
 
 ## Exercise 25
 Write a query to return the first 50 documents for gold medal athletics events, in descending age order.
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET olympic-events-fixed/_search
@@ -1509,6 +1626,8 @@ GET olympic-events-fixed/_search
   ]
 }
 ```
+</details>
+<hr>
 
 ## Exercise 26
 Write a query to match swimming events where either:
@@ -1526,6 +1645,9 @@ Try this:
 - Enhance the query so the results identify whether the weight, age, or both matched the search criteria.
 - First 50 results
 - Only return, age, weight, sport.
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
 
 ```json
 GET olympic-events-fixed/_search
@@ -1574,7 +1696,8 @@ GET olympic-events-fixed/_search
 }
 ```
 
-
+</details>
+<hr>
 
 
 ## Exercise 27
@@ -1584,23 +1707,282 @@ noc (keyword)
 region (keyword)
 notes (text)
 
+:bulb: Use this information and carry on to Exercise 28
+
 ## Exercise 28
 Index the data containing information about the National Olympic Committees using the Bulk API by following these steps:
 
 https://www.kaggle.com/heesoo37/120-years-of-olympic-history-athletes-and-results/version/2?select=noc_regions.csv
 
-Use the data visualiser in Kibana
+:bulb: Use the data visualiser in Kibana and the information in Exercise 27 to import and create the index.
 
+:warning: Data Visualiser DOES NOT import Macintosh (CR) formatted files properly (so i have found).  You may find it imports OK but no docs are actually imported.  Change the line endings to LF (Linux) or CR/LF (Windows) in the csv file then re-import!
+
+:warning: You may find the Data Visualiser does not import all lines, but does not show any errors.
 
 ## Exercise 29
 Create an enrich policy and ingest pipeline that uses the enrich processor to add details of the National Olympic Committee to each document in the olympic-events-fixed index. Call the policy olympic-noc-append and the pipeline enrich-noc. Add details of the matching NOC entry to a new field called nocDetails, matching on the noc field.
 
+- https://www.elastic.co/guide/en/elasticsearch/reference/7.13/ingest-enriching-data.html
+- https://youtu.be/TfP1Yjed99o?t=352s 
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+:bulb: You cannot uopdate a policy, thus you need to `delete` it and the pipeline to re-create it
+
+```json
+DELETE /_ingest/pipeline/enrich-noc
+DELETE /_enrich/policy/olympic-noc-append
+```
+
+```json 
+// create the policy
+PUT /_enrich/policy/olympic-noc-append
+{
+  "match": {
+    "indices": "olympic-noc-regions",
+    "match_field": "noc",
+    "enrich_fields": ["noc","region", "notes"]
+  }
+}
+
+// apply the policy
+POST /_enrich/policy/olympic-noc-append/_execute
+
+// create the pipeline
+PUT /_ingest/pipeline/enrich-noc
+{
+  "processors" : [
+    {
+      "enrich" : {
+        "policy_name": "olympic-noc-append",
+        "field" : "noc",
+        "target_field": "nocDetails",
+        "max_matches": "1"
+      }
+    }
+  ]
+}
+
+// test
+POST /_ingest/pipeline/enrich-noc/_simulate
+{
+ "docs": [
+   {
+        "_index" : "olympic-events-fixed",
+        "_type" : "_doc",
+        "_id" : "CMfEbnwBlYfrBPPFGx5y",
+        "_score" : 1.0,
+        "_source" : {
+          "noc" : "KEN",
+          "city" : "Sydney",
+          "year" : "2000",
+          "sex" : "M",
+          "weight" : "53",
+          "team" : "Kenya",
+          "Year" : 2000,
+          "athleteId" : 20522,
+          "medal" : "NA",
+          "season" : "Summer",
+          "Season" : "Summer",
+          "athleteName" : "Kenneth Cheruiyot",
+          "event" : "Athletics Men's Marathon",
+          "sport" : "Athletics",
+          "age" : "26",
+          "height" : "173"
+        }
+      }
+   ] 
+}
+
+// output
+
+{
+  "docs" : [
+    {
+      "doc" : {
+        "_index" : "olympic-events-fixed",
+        "_type" : "_doc",
+        "_id" : "CMfEbnwBlYfrBPPFGx5y",
+        "_source" : {
+          "nocDetails" : {
+            "region" : "Kenya",
+            "noc" : "KEN"
+          },
+          "noc" : "KEN",
+          "city" : "Sydney",
+          "year" : "2000",
+          "sex" : "M",
+          "weight" : "53",
+          "team" : "Kenya",
+          "Year" : 2000,
+          "athleteId" : 20522,
+          "medal" : "NA",
+          "season" : "Summer",
+          "Season" : "Summer",
+          "athleteName" : "Kenneth Cheruiyot",
+          "event" : "Athletics Men's Marathon",
+          "sport" : "Athletics",
+          "age" : "26",
+          "height" : "173"
+        },
+        "_ingest" : {
+          "timestamp" : "2021-10-12T13:20:15.782836824Z"
+        }
+      }
+    }
+  ]
+}
+```
+
+</details>
+<hr>
 
 
 ## Exercise 30
 Create a new index called olympic-events-enriched, into which we can reindex the Olympic events but with some enriched fields. Change the mapping settings for the new index so we can add fields dynamically.
 
+https://www.elastic.co/guide/en/elasticsearch/reference/7.13/dynamic.html#dynamic-parameters
 
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+Get the old index
+```json
+GET olympic-events-fixed
+```
+
+create a new index
+```json
+PUT olympic-events-enriched
+{
+  "aliases": {},
+  "mappings": {
+    "dynamic" : "true",
+    "properties": {
+      "Season": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "Year": {
+        "type": "long"
+      },
+      "age": {
+        "type": "short"
+      },
+      "athleteId": {
+        "type": "integer"
+      },
+      "athleteName": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "city": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "event": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "gender": {
+        "type": "keyword"
+      },
+      "height": {
+        "type": "short"
+      },
+      "medal": {
+        "type": "keyword"
+      },
+      "noc": {
+        "type": "keyword"
+      },
+      "season": {
+        "type": "keyword"
+      },
+      "sex": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "sport": {
+        "type": "keyword"
+      },
+      "team": {
+        "type": "keyword"
+      },
+      "weight": {
+        "type": "short"
+      },
+      "year": {
+        "type": "short"
+      }
+    }
+  },
+  "settings": {
+    "number_of_shards": "1",
+    "number_of_replicas": "0"
+  }
+}
+```
+
+</details>
+<hr>
 
 ## Exercise 31
 Reindex the olympic-events-fixed index into olympic-events-enriched, running it through the enrich-noc ingest pipeline. Once complete, verify the new field was added to the olympic-events-fixed index, and populated with details of the associated NOC.
+
+<details>
+  <summary>View Solution (click to reveal)</summary>
+
+```json
+POST _reindex
+{
+  "source": {
+    "index": "olympic-events-fixed"
+  },
+  "dest": {
+    "index": "olympic-events-enriched",
+    "pipeline": "enrich-noc"
+  }
+}
+```
+
+test
+```json
+GET olympic-events-enriched/_search
+{
+  "query": {
+    "match": {
+      "team": "Australia"
+    }
+  }
+}
+```
+
+</details>
+<hr>
+
+### Fin!
