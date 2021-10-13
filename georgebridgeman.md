@@ -1,13 +1,17 @@
 # George Bridgeman Exercises
 
-See https://georgebridgeman.com/exercises/olympic-data/olympics-01/
+These are the awesome George Bridgeman exercises.  Have fun!
+
+See https://georgebridgeman.com/exercises/
 
 ## Prerequisites
+
+George Bridgeman uses curl to upload the data.  Now Elastic expect you to be familiar with the `Data Visualiser`.  So we pull down the same data from `Kaggle` and use that csv formatted data instead.
 
 Download CSV from here:
 https://www.kaggle.com/heesoo37/120-years-of-olympic-history-athletes-and-results/version/2
 
-Upload into `olympic-events` viq the `data visualiser` in Kibana.
+Upload into `olympic-events` via the `data visualiser` in Kibana.
 
 ## Skip Exercises 01-03
 
