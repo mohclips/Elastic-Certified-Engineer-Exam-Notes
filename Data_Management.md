@@ -129,7 +129,7 @@ PUT _template/accounts-tmpl
     "age" :  { "type": "integer" },
     "gender" :  { "type": "keyword" },
     "address" :  { "type": "text" },
-    "employer" :  { "type": "keyword" },
+    "employer" :  { "type": "text", "fields": { "keyword": { "type": "keyword"} } },
     "email" :  { "type": "keyword" },
     "city" :  { "type": "keyword" },
     "state" :  { "type": "keyword" }
